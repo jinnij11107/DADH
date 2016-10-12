@@ -1,0 +1,12 @@
+
+.block {
+	background-color: rgb(255, 255, 255); 
+	font-family:微軟正黑體; 
+	font-size: 12pt; 
+	border-style: solid;
+	width: 100%;
+}
+.title {
+	font-family:微軟正黑體; 
+	font-size: 20pt; 
+}
