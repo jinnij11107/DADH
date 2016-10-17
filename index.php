@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<?php 
-	include("phpManager/DBManager.php");
-	$DBManager = new DBManager; 
+<?php
+include "phpManager/DBManager.php";
+$DBManager = new DBManager;
 ?>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,30 +10,31 @@
     <meta charset="UTF-8" />
 
     <title>春秋對讀系統</title>
-    
+
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/main.css" rel="stylesheet">
 	<link href="index.css" rel="stylesheet">
-	
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/highlight.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-	
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 	<!-- myFunction -->
 	<script type="text/javascript" src="js/content.js"></script>
+
 </head>
 
-<style type=text/css> 
+<style type=text/css>
 	body { font-family:微軟正黑體; }
 </style>
 
 <script type="text/javascript">
-
 function moveAnchor() {
 	var parentBlock = event.target.parentElement.parentElement.parentElement;
 	var $timeArray = event.target.className.split(" ");//0 is text, >= 1 is time
@@ -48,7 +49,7 @@ function moveAnchor() {
 	for(var i = 0; i < $blockArray.length; i ++) {
 		var $temp = $( $blockArray[i] ).find(classSelector);
 		if( $temp.length > 0) $anchorArray[i] = $( $temp[0] ).offset().top ;
-		else $anchorArray[i] = $( $blockArray[i] ).offset().top 
+		else $anchorArray[i] = $( $blockArray[i] ).offset().top
 	}
 	var window_gap = $($(".nav-sidebar")[0]).offset().top;
 	for(var i = 0; i < $anchorArray.length; i ++) {
@@ -396,7 +397,7 @@ function moveAnchor() {
           		<form class="navbar-form navbar-right" action="query.php" method="GET">
             		<input type="text" name="query" class="form-control" placeholder="搜尋...">
           		</form>
-				
+
         	</div>
       	</div>
     </nav>
@@ -421,28 +422,28 @@ function moveAnchor() {
 							    <?php $DBManager->queryAndSet(1);?>
 							</ul>
 						</div>
-						
+
 						<div class="book col-sm-3 content hidden">
 							<h1 class="page-header">左傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(2);?>
 							</ul>
 						</div>
-						
+
 						<div class="book col-sm-3 content hidden">
 							<h1 class="page-header">公羊傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(3);?>
 							</ul>
 						</div>
-						
+
 						<div class="book col-sm-3 content hidden">
 							<h1 class="page-header">穀梁傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(4);?>
 							</ul>
 						</div>
-						
+
 						<div class="book col-sm-3 content hidden">
 							<h1 class="page-header">春秋經解</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
