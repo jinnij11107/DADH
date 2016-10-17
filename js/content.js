@@ -21,6 +21,7 @@ $( document ).ready(function() {
     $bookcase = $('.book');
 	$checked = [true, false, false, false, false ];
 	
+	
 	$panel = $(".nav-sidebar");
 	var h = document.body.scrollHeight;
 	var t = $($(".nav-sidebar")[0]).offset().top;
@@ -31,8 +32,7 @@ $( document ).ready(function() {
 
 //--	dropdown bar action listener
 $( document ).ready(function() {
-	
-	var window_gap = $($(".nav-sidebar")[0]).offset().top;
+
 	var text = $('.dropdown');
 	
 	for(var i = 0; i < text.length; i ++) {
@@ -40,12 +40,14 @@ $( document ).ready(function() {
 			
 			$( text[i].lastElementChild.children[j].firstElementChild ) .click(function () {
 				
+				findChunqiuByTitle(event.target.hash.replace("#", "") );
+				
 				for(var i = 0; i < $checked.length; i ++) {
 					if( $checked[i] == true ) {
 						var slider = $( $bookcase[i].lastElementChild )[0];
 						var target = slider.getElementsByClassName( this.hash.replace("#", "") )[0];
 						$(slider).animate({
-							scrollTop: $(slider).scrollTop() + ( $(target).offset().top - window_gap )
+							scrollTop: $(slider).scrollTop() + ( $(target).offset().top - $($(".nav-sidebar")[i]).offset().top )
 						}, 600);
 					}
 				}
@@ -54,23 +56,7 @@ $( document ).ready(function() {
 	}
 });
 
-//--	anchor listener
-$( document ).ready(function() {
-	/*
-	for( var i = 0; i < $bookcase.length; i ++) {
-		for( var j = 0; j < $bookcase[i].lastElementChild.childNodes.length -1; j ++) {
-			for(var k = 0; k < $bookcase[i].lastElementChild.childNodes[j].lastElementChild.childNodes.length; k ++) {
-				
-			}
-		}
-	}*/
-	
-	
-	
-});
-
 //--	mouse listener
-
 $( document ).ready(function() {
 	var timeoutId;
 	
@@ -129,7 +115,7 @@ $( document ).ready(function() {
 
 //--	function
 function show_page(span) {
-
+	findChunqiuByTitle("魯隱公元年");
 	$label = span.children;
 	var count = 1;
 	for(var i = 1; i < $label.length; i ++) {
@@ -151,7 +137,7 @@ function show_page(span) {
 			changeBook($bookcase[0], col);
 			break;
 		case 2:
-			var col = 8;
+			var col = 9;
 			for(var i = 0; i < $bookcase.length; i ++) {
 				if( $checked[i] == true ) {
 					changeBook($bookcase[i], col);
@@ -160,11 +146,12 @@ function show_page(span) {
 					$( $bookcase[i] ).detach();
 				}
 			}
-			changeBook($bookcase[0], 4);
+			changeBook($bookcase[0], 3);
 			break;
 		case 3:
-			var col = 4;
-			for(var i = 0; i < $bookcase.length; i ++) {
+			$($bookcase[0]).attr('class', 'book col-sm-12 content hidden');
+			var col = 6;
+			for(var i = 1; i < $bookcase.length; i ++) {
 				if( $checked[i] == true ) {
 					changeBook($bookcase[i], col);
 					$("#main").append($bookcase[i]);
@@ -173,7 +160,18 @@ function show_page(span) {
 				}
 			}
 			break;
-		
+		case 4:
+			var col = 4;
+			$($bookcase[0]).attr('class', 'book col-sm-12 content hidden');
+			for(var i = 1; i < $bookcase.length; i ++) {
+				if( $checked[i] == true ) {
+					changeBook($bookcase[i], col);
+					$("#main").append($bookcase[i]);
+				} else {
+					$( $bookcase[i] ).detach();
+				}
+			}
+			break;
 	}
 	
 }
@@ -232,4 +230,43 @@ function showTargetClass(targetDiv) {
 		$( targetDiv.lastChild.childNodes[i] ).fadeTo("fast", 1);
 }
 
+function findChunqiuByTitle(title) {
+	
+	$indexArray = $($bookcase[0]).find("." + title).find('.panel-body')[0].children;
+	$("#Ctitle").empty();
+	$("#Ctitle").append('<li role="presentation" class="dropdown-header">' + title + '</li>');
+	$("#Ctitle").append('<li role="presentation" class="divider"></li>');
+	for(var i = 0; i < $indexArray.length; i ++) {
+		$("#Ctitle").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >' + $indexArray[i].innerText+ '</a></li>');
+	}
+	$('#spanTitle')[0].innerHTML = $indexArray[0].innerText;
+}
 
+function findCgunqiuByIndex(classSelectot, title) {
+	$indexArray = $($bookcase[0]).find("." + title).find('.panel-body')[0].children;
+	var $temp = $( $indexArray ).find(classSelectot);
+	if( $temp.length == 0) findChunqiuByTitle(title);
+	else {
+		$("#Ctitle").empty();
+		$("#Ctitle").append('<li role="presentation" class="dropdown-header">' + title + '</li>');
+		$("#Ctitle").append('<li role="presentation" class="divider"></li>');
+		for(var i = 0; i < $indexArray.length; i ++) {
+			$("#Ctitle").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >' + $indexArray[i].innerText+ '</a></li>');
+		}
+		$('#spanTitle')[0].innerHTML = $temp[0].innerText;
+	}
+}
+
+function missAlert(target) {
+	for (var i = 1; i < 3; i++) {
+		setTimeout(function() {
+			target.animate({
+				backgroundColor: "rgb(239, 220, 220)"
+			}, 'slow', function() {
+				target.animate({
+					backgroundColor: "white"
+				}, 'slow')
+			})
+		}, i * 1000);
+	}
+}

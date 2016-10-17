@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<?php
-include "phpManager/DBManager.php";
-$DBManager = new DBManager;
+<?php 
+	include("phpManager/DBManager.php");
+	$DBManager = new DBManager; 
 ?>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,32 +10,33 @@ $DBManager = new DBManager;
     <meta charset="UTF-8" />
 
     <title>春秋對讀系統</title>
-
+    
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/main.css" rel="stylesheet">
 	<link href="index.css" rel="stylesheet">
-
+	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/highlight.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
 	<!-- myFunction -->
 	<script type="text/javascript" src="js/content.js"></script>
-
 </head>
 
-<style type=text/css>
+<style type=text/css> 
 	body { font-family:微軟正黑體; }
 </style>
 
 <script type="text/javascript">
+
 function moveAnchor() {
+	
 	var parentBlock = event.target.parentElement.parentElement.parentElement;
 	var $timeArray = event.target.className.split(" ");//0 is text, >= 1 is time
 	var classSelector = "";
@@ -49,14 +50,18 @@ function moveAnchor() {
 	for(var i = 0; i < $blockArray.length; i ++) {
 		var $temp = $( $blockArray[i] ).find(classSelector);
 		if( $temp.length > 0) $anchorArray[i] = $( $temp[0] ).offset().top ;
-		else $anchorArray[i] = $( $blockArray[i] ).offset().top
+		else {
+			$anchorArray[i] = $( $blockArray[i] ).offset().top 
+			missAlert( $($blockArray[i]) );
+		}
 	}
 	var window_gap = $($(".nav-sidebar")[0]).offset().top;
 	for(var i = 0; i < $anchorArray.length; i ++) {
 		$($(".nav-sidebar")[i]).animate({
-			scrollTop: $( $(".nav-sidebar")[i] ).scrollTop() + $anchorArray[i] - window_gap -50
+			scrollTop: $( $(".nav-sidebar")[i] ).scrollTop() + $anchorArray[i] - $($(".nav-sidebar")[i]).offset().top -60
 		}, 600);
 	}
+	findCgunqiuByIndex(classSelector, parentBlock.className.split(" ")[3]);
 }
 </script>
 
@@ -397,7 +402,7 @@ function moveAnchor() {
           		<form class="navbar-form navbar-right" action="query.php" method="GET">
             		<input type="text" name="query" class="form-control" placeholder="搜尋...">
           		</form>
-
+				
         	</div>
       	</div>
     </nav>
@@ -409,41 +414,61 @@ function moveAnchor() {
     	<h4 class="hidden"> 年號：</h4>
     </div>
 -->
+
+	<div class="dropdown">
+		<button  class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+			春秋條目&nbsp;
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id='Ctitle' >
+			<li role="presentation" class="dropdown-header">魯隱公元年</li>
+			<li role="presentation" class="divider"></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >元年，春，王正月。</a></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >三月，公及邾儀父盟于蔑。</a></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >夏，五月，鄭伯克段于鄢。</a></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >秋，七月，天王使宰咺來歸惠公仲子之賵。</a></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >九月，及宋人盟于宿。</a></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >冬，十有二月，祭伯來。</a></li>
+			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >公子益師卒。</a></li>
+		</ul>
+		<span id="spanTitle" >元年，春，王正月。</span>
+	</div>
+
+
     <!-- Main board -->
     <div class="container-fluid" >
     	<div class="row">
     		<div id="main">
-			    <!-- only春秋 (default) -->
 				<div class="col-sm-12 col-md-12">
 					<div class="row">
 					    <div class="book col-sm-12 content">
 							<h1 class="page-header">春秋</h1>
-							<ul class="nav nav-sidebar" style="width:100%;height:20px;overflow-x:auto;overflow-y:auto;">
+							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(1);?>
 							</ul>
 						</div>
-
-						<div class="book col-sm-3 content hidden">
+						
+						<div class="book col-sm-4 content hidden">
 							<h1 class="page-header">左傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(2);?>
 							</ul>
 						</div>
-
-						<div class="book col-sm-3 content hidden">
+						
+						<div class="book col-sm-4 content hidden">
 							<h1 class="page-header">公羊傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(3);?>
 							</ul>
 						</div>
-
-						<div class="book col-sm-3 content hidden">
+						
+						<div class="book col-sm-4 content hidden">
 							<h1 class="page-header">穀梁傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(4);?>
 							</ul>
 						</div>
-
+						
 						<div class="book col-sm-3 content hidden">
 							<h1 class="page-header">春秋經解</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
