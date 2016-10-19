@@ -1,12 +1,19 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <?php 
-	include("phpManager/DBManager.php");
-	$DBManager = new DBManager; 
+	include('dbManager.php');
+	$db = new dbManager; 
+	$query[1] = $db->search_TITLEandCONTENT($_GET['query'],1);
+	$query[2] = $db->search_TITLEandCONTENT($_GET['query'],2);
+	$query[3] = $db->search_TITLEandCONTENT($_GET['query'],3);
+	$query[4] = $db->search_TITLEandCONTENT($_GET['query'],4);
+	// $query[5] = $db->search_TITLEandCONTENT($_GET['query'],5);
 ?>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
     <meta charset="UTF-8" />
 
     <title>春秋對讀系統</title>
@@ -20,27 +27,102 @@
 	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <!--<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/highlight.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	<!-- jQuery chart bar ) -->
-	<script src="js/Chart.bundle.js"></script>
-	
-	<!-- myFunction -->
-	<script type="text/javascript" src="js/content.js"></script>
-	<script type="text/javascript" src="js/query.js"></script>
-	
-	
 </head>
 
-<style type=text/css> 
-	body { font-family:微軟正黑體; }
-</style>
-
+<script type="text/javascript">
+$( document ).ready(function() {
+	var window_gap = $($(".nav-sidebar")[0]).offset().top;
+	
+	var text = $('.dropdown');
+	
+	for(var i = 0; i < text.length; i ++) {
+		for(var j = 0; j < text[i].lastElementChild.children.length; j ++) {
+			
+			$( text[i].lastElementChild.children[j].firstElementChild ) .click(function () {
+				
+				$($(".nav-sidebar")[0]).animate({
+					scrollTop: $( $(".nav-sidebar")[0] ).scrollTop() + ( $( $('.' + this.hash.replace("#", ""))[0] ).offset().top - window_gap )
+				}, 600);
+				
+				$($(".nav-sidebar")[1]).animate({
+					scrollTop:  $( $(".nav-sidebar")[1] ).scrollTop() + ( $( $('.' + this.hash.replace("#", ""))[1] ).offset().top - window_gap )
+				}, 600);
+				
+				$($(".nav-sidebar")[2]).animate({
+					scrollTop:  $( $(".nav-sidebar")[2] ).scrollTop() + ( $( $('.' + this.hash.replace("#", ""))[2] ).offset().top - window_gap )
+				}, 600);
+				
+				$($(".nav-sidebar")[3]).animate({
+					scrollTop:  $( $(".nav-sidebar")[3] ).scrollTop() + ( $( $('.' + this.hash.replace("#", ""))[3] ).offset().top - window_gap )
+				}, 600);
+				
+				$($(".nav-sidebar")[4]).animate({
+					scrollTop:  $( $(".nav-sidebar")[4] ).scrollTop() + ( $( $('.' + this.hash.replace("#", ""))[4] ).offset().top - window_gap )
+				}, 600);
+			});
+		}
+	}
+		
+	for(var i = 0; i < $('.nav-sidebar').length; i ++) {
+		for(var j = 1; j < $('.nav-sidebar')[i].childNodes.length; j ++) {
+			for(var k = 1; k < $('.nav-sidebar')[i].childNodes[j].childNodes.length - 1; k ++) {
+				
+				$( $('.nav-sidebar')[i].childNodes[j].childNodes[k].firstElementChild ).click(function() {
+					
+					try {
+						$($(".nav-sidebar")[0]).animate({
+							scrollTop: $( $(".nav-sidebar")[0] ).scrollTop() + ( $( $( $('.' + this.hash.replace("# ", "").split(" ")[0]     )[0] )[0] ).offset().top - window_gap )
+						}, 600);
+					}catch(err) {
+						console.log("0 : " + err);
+					}
+					
+					try {
+						$($(".nav-sidebar")[1]).animate({
+							scrollTop:  $( $(".nav-sidebar")[1] ).scrollTop() + ( $( $( $('.' + this.hash.replace("# ", "").split(" ")[0]     )[1] )[0] ).offset().top - window_gap )
+						}, 600);
+					}catch(err) {
+						console.log("1 : " + err);
+					}
+					
+					try {
+						$($(".nav-sidebar")[2]).animate({
+							scrollTop:  $( $(".nav-sidebar")[2] ).scrollTop() + ( $( $( $('.' + this.hash.replace("# ", "").split(" ")[0]     )[2] )[0] ).offset().top - window_gap )
+						}, 600);
+					}catch(err) {
+						
+					}
+					
+					try {
+						$($(".nav-sidebar")[3]).animate({
+							scrollTop:  $( $(".nav-sidebar")[3] ).scrollTop() + ( $( $( $('.' + this.hash.replace("# ", "").split(" ")[0]     )[3] )[0] ).offset().top - window_gap )
+						}, 600);
+					}catch(err) {
+						
+					}
+					
+					try {
+						$($(".nav-sidebar")[4]).animate({
+							scrollTop:  $( $(".nav-sidebar")[4] ).scrollTop() + ( $( $( $('.' + this.hash.replace("# ", "").split(" ")[0]     )[4] )[0] ).offset().top - window_gap )
+						}, 600);
+					}catch(err) {
+						
+					}
+				});
+			}
+		}
+	}		
+				
+	});
+</script>
 
 <body>
-<!-- Static navbar -->
+	<!-- Static navbar -->
     <nav class="navbar navbar-default navbar-static-top">
     	<div class="container-fluid">
         	<div class="navbar-header">
@@ -364,88 +446,87 @@
               		</ul>
             	</li>
           		</ul>
-
-				<!-- <h5>請勾選欲顯示書目<h5> -->
-				<span id="books">
-				<button onclick="show_page(this.parentElement)">Submit</button>
-				<label><input type="checkbox" value="左傳">左傳</label>
-				<label><input type="checkbox" value="公羊傳">公羊傳</label>
-				<label><input type="checkbox" value="穀梁傳">穀梁傳</label>
-				<label><input type="checkbox" value="春秋經解">春秋經解</label>
-				</span>
+          		<ul class="nav navbar-nav navbar-right"></ul>
           		<form class="navbar-form navbar-right" action="query.php" method="GET">
             		<input type="text" name="query" class="form-control" placeholder="搜尋...">
           		</form>
-				
         	</div>
       	</div>
     </nav>
 
-	    <!-- Main board -->
-    <div class="container-fluid" >
+    <!-- Show 選擇年號 -->
+    <div class="container-fluid" id="age">
+    	<h4 class="visible"> 年號：</h4>
+    	<h4 class="hidden"> 年號：</h4>
+    </div>
+
+    <!-- Main board -->
+    <div class="container-fluid">
     	<div class="row">
     		<div id="main">
-				<div class="col-sm-12 col-md-12">
-					<h1>檢索結果</h1>
-					<div class="panel panel-default">
-						<div class="col-sm-3 col-md-3">
-						
-						  <div class="panel-body" id="yearList" >
-							<h3><strong>君王年份</strong></h3>
-							<ul>
-								<?php $DBManager->queryIndexDirectoryAndSet($_GET['query']); ?>
+			    <!-- only春秋 (default) -->
+				<div class="col-sm-10 col-md-10">	
+					<div class="row">
+					    <div class="book col-sm-12 content">
+							<h1 class="page-header">春秋</h1>
+							<ul class="nav nav-sidebar" style="width:100%px;height:550px;overflow-x:auto;overflow-y:auto;">
+							    <?php include('import/queryChunqiu.php');?>
 							</ul>
-						  </div>
+						</div>
+						<div class="book col-sm-5 content hidden">
+							<h1 class="page-header">左傳</h1>
+							<ul class="nav nav-sidebar" style="width:100%px;height:550px;overflow-x:auto;overflow-y:auto;">
+							    <?php include('import/queryzuozhuan.php');?>
+							</ul>
 						</div>
 						
-						<div class="col-sm-9 col-md-9" >
-							<canvas id="myChart" width="400" height="150%"></canvas>
-							<script>
-								var numArray = <?php echo $DBManager->findBooksNumArray($_GET['query']); ?>;
-								var data = {
-									labels: ["春秋", "左傳", "公羊傳", "榖梁傳"],
-									datasets: [
-										{
-											label: "nums",
-											backgroundColor: 'rgba(255, 206, 86, 0.2)',
-											borderColor: 'rgba(255, 206, 86, 1)', 
-											borderWidth: 2,
-											data: numArray,
-										}
-									]
-								};
-								var myBarChart = new Chart($("#myChart"), {
-									type: 'bar',
-									data: data,
-									options: {
-										 title: {
-											display: true,
-											text: '檢索統計'
-										},
-										scales: {
-											xAxes: [{
-												stacked: true,
-												categoryPercentage: 0.5,
-												barPercentage: 1, 
-											}],
-											yAxes: [{
-												stacked: true
-											}]
-										}
-									}
-								});
-							</script>
+						<div class="book col-sm-5 content hidden">
+							<h1 class="page-header">公羊傳</h1>
+							<ul class="nav nav-sidebar" style="width:100%px;height:550px;overflow-x:auto;overflow-y:auto;">
+							    <?php include('import/queryGongyang.php');?>
+							</ul>
 						</div>
-					</div>
-					
-					<div class="book col-sm-12 content " >
-						<ul class="nav nav-sidebar" style="width:100%;height:100%;">
-							<?php $DBManager->queryIndexAndSet($_GET['query']); ?>
-						</ul>
+						
+						<div class="book col-sm-5 hidden">
+							<h1 class="page-header">穀梁傳</h1>
+							<ul class="nav nav-sidebar" style="width:100%px;height:550px;overflow-x:auto;overflow-y:auto;">
+							    <?php include('import/queryGuliang.php');?>
+							</ul>
+						</div>
+						
+						<div class="book col-sm-5 hidden">
+							<h1 class="page-header">春秋經解</h1>
+							<ul class="nav nav-sidebar" style="width:100%px;height:580px;overflow-x:auto;overflow-y:auto;">
+								<?php include('import/chunqiugin.php');?>
+							</ul>
+						</div>
+						
 					</div>
 				</div>
 			</div>
+
+			<!-- Right board -->
+			<div class="col-sm-2 col-md-2 checklist">
+	        	<h4>請勾選欲顯示書目</h4>
+	        	<div id="books">
+		        	<div class="checkbox">
+	  					<label><input type="checkbox" value="左傳">左傳</label>
+					</div>
+					<div class="checkbox">
+	  					<label><input type="checkbox" value="公羊傳">公羊傳</label>
+					</div>
+					<div class="checkbox">
+	  					<label><input type="checkbox" value="穀梁傳">穀梁傳</label>
+					</div>
+					
+					<div class="checkbox">
+	  					<label><input type="checkbox" value="春秋經解">春秋經解</label>
+					</div>
+					
+				</div>
+				<button onclick="show_page()">Submit</button>
+	        </div>		    
 	    </div>
     </div>
-<body>
-
+</body>
+<script type="text/javascript" src="js/content.js"></script>

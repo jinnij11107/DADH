@@ -1,11 +1,15 @@
 <?php
 	class DBManager{
 		//attribute
-		private $dbhost = '140.112.30.226:13003';
-		private $dbuser = 'test';
-		private $dbpass = 'lab303';
+		//private $dbhost = '140.112.30.226:13003';
+		//private $dbuser = 'test';
+		//private $dbpass = 'lab303';
+		private $dbhost = '127.0.0.1:3306';
+		private $dbuser = 'root';
+		private $dbpass = '';
 		private $dbname = 'chunqiusys2';
 		private $bookID_Name = array(1=>"chunqiu", 2=>"zuozhuan", 3=>"gongyang", 4=>"guliang", 5=>"chunqiujingjie");
+		private $bookcase_ID = array(1=>"春秋", 2=>"左傳", 3=>"公羊傳", 4=>"穀梁傳", 5=>"春秋經解");
 		private $connection;
 		
 		//constructor
@@ -15,10 +19,12 @@
 		function __destruct() {
 			$this->connection;
 		}
+		//--	取得文本的所有資料
 		function query_book($bookID){
 			$result = $this->connection->query('select * FROM '.$this->bookID_Name[$bookID].' ORDER BY ID');
 			return $result;
 		}
+		//--	取得文本的資料後，格式的設定
 		function queryAndSet($bookID) {
 			$result = $this->query_book( $bookID );
 			
@@ -54,7 +60,7 @@
 				}
 			}
 		}
-		
+		//--	插入文本
 		function insertTion($filePath, $bookcaseId) {
 			$target = $this->bookID_Name[$bookcaseId];
 			$stmt = $this->connection->prepare("INSERT INTO $target ( TITLE, SEASON, MONTH, DAY, CONTEXT, YEAR_START, YEAR_END) 
@@ -84,13 +90,126 @@
 						$stmt->bindParam(':yearEnd', $yearEnd);
 						
 						$stmt->execute();
-						echo $stmt + "</br>";
 					}
 					fclose($file);
 				}
 			} else {
 				echo "nope";
 			}
+		}
+		//--	檢索所有文本
+		function queryIndex($query) {
+			$query = "%".$query."%";
+			$result = $this->connection->query("SELECT * FROM chunqiu WHERE CONTEXT LIKE '$query' UNION
+			SELECT * FROM zuozhuan WHERE CONTEXT LIKE '$query' UNION 
+			SELECT * FROM gongyang WHERE CONTEXT LIKE '$query' UNION 
+			SELECT * FROM guliang WHERE CONTEXT LIKE '$query' ORDER BY `YEAR_START` DESC, BOOKCASE_ID");
+			return $result;
+		}
+		//--	插入檢索文本
+		function queryIndexAndSet($query) {
+			$result = $this->queryIndex( $query );
+			$bookArray = array("", "", "", "", "");
+			//--	TODO將來要改
+			foreach ($result as $data) {
+				$title = $data['TITLE'];
+				$bookId = $data['BOOKCASE_ID'];
+				$bookArray[$bookId] .= "<li>".$data['CONTEXT']."</li>";
+				break;
+			}
+			
+			foreach ($result as $data) {
+				if($title == $data['TITLE']) {
+					if($bookId == $data['BOOKCASE_ID']) {
+						$bookArray[$bookId] .= "<li>".$data['CONTEXT']."</li>";
+					} else {
+						$bookId = $data['BOOKCASE_ID'];
+						$bookArray[$bookId] .= "<li>".$data['CONTEXT']."</li>";
+					}
+				} else {
+					echo "<div class='panel panel-default block $title' name='$title'>";
+					echo "<div class='title panel-heading'>";
+					echo "$title</div>";
+					echo "<div class='panel-body'>";
+					for($i = 0; $i < count($bookArray); $i ++) {
+						if($bookArray[$i] != "") {
+							echo "<h3>".$this->bookcase_ID[$i]."<h3>";
+							echo "<blockquote>".$bookArray[$i]."</blockquote>";
+						}
+					}
+					echo "</div>";
+					echo "</div>";
+					
+					$title = $data['TITLE']	;
+					for($i = 0; $i < count($bookArray); $i ++) {
+						$bookArray[$i] = "";
+					}
+					$bookId = $data['BOOKCASE_ID'];
+					$bookArray[$bookId] .= "<li>".$data['CONTEXT']."</li>";
+					
+				}
+			}
+			
+			echo "<div class='panel panel-default block $title' name='$title'>";
+			echo "<div class='title panel-heading'>";
+			echo "$title</div>";
+			echo "<div class='panel-body'>";
+			for($i = 0; $i < count($bookArray); $i ++) {
+				if($bookArray[$i] != "") {
+					echo "<h3>".$this->bookcase_ID[$i]."<h3>";
+					echo "<blockquote>".$bookArray[$i]."</blockquote>";
+				}
+			}
+			echo "</div>";
+			echo "</div>";
+			
+		}
+		//--	檢索文本TITLE目錄
+		function queryIndexDirectory($query) {
+			$query = "%".$query."%";
+			$result = $this->connection->query("SELECT DISTINCT(TITLE), `YEAR_START` FROM chunqiu WHERE CONTEXT LIKE '$query' UNION
+			SELECT DISTINCT(TITLE), `YEAR_START` FROM zuozhuan WHERE CONTEXT LIKE '$query' UNION 
+			SELECT DISTINCT(TITLE), `YEAR_START` FROM gongyang WHERE CONTEXT LIKE '$query' UNION 
+			SELECT DISTINCT(TITLE), `YEAR_START` FROM guliang WHERE CONTEXT LIKE '$query' ORDER BY `YEAR_START` DESC");
+			return $result;
+		}
+		//--	插入文本TITLE目錄
+		function queryIndexDirectoryAndSet($query) {
+			$result = $this->queryIndexDirectory( $query );
+			$titleArray = array();
+			//--	ini
+			foreach ($result as $data) {
+				$title = $data['TITLE'];
+				array_push($titleArray, $title);
+				break;
+			}
+			
+			foreach ($result as $data) {
+				if( $title != $data['TITLE']) {
+					$title = $data['TITLE'];
+					array_push($titleArray, $title);
+				}
+			} array_push($titleArray, $title);
+			
+			for($i = 0; $i < COUNT($titleArray); $i ++)
+				echo "<li><a href=# >".$titleArray[$i]."</a></li>";
+		}
+		//--	算文本數量
+		function countBooksNum($bookID, $query) {
+			$query = "%".$query."%";
+			$result = $this->connection->query("SELECT COUNT(*) AS num FROM ".$this->bookID_Name[$bookID]." WHERE CONTEXT LIKE '$query'");
+			return $result;
+		}
+		//--	文本數量回陣列
+		function findBooksNumArray($query) {
+			$numArray = array();
+			for($i = 1; $i < 5; $i ++) {
+				$result = $this->countBooksNum($i, $query);
+				foreach ($result as $data)  {
+					array_push($numArray, $data['num']);
+				}
+			}
+			return json_encode($numArray);
 		}
 	}
 ?>

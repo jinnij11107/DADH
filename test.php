@@ -6,7 +6,16 @@
 	include("phpManager/DBManager.php");
 
 	$DBManager = new DBManager; 
-	//$DBManager->insertTion("context/parsedZuozhuan.txt", 2);
+	$DBManager->findBooksNumArray("雨");
+	
+	/*
+	$result = $DBManager->queryIndex("雨");
+	foreach ($result as $data) {
+		echo $data['TITLE']."</br>";
+		echo $data['CONTEXT']."</br>";
+	}*/
+	
+		
 	
 			
 
