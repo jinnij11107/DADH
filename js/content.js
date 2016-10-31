@@ -23,6 +23,7 @@ $( document ).ready(function() {
 	
 	
 	$panel = $(".nav-sidebar");
+	
 	var h = document.body.scrollHeight;
 	var t = $($(".nav-sidebar")[0]).offset().top;
 	for(var i = 0; i < $panel.length; i ++) {

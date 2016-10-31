@@ -6,7 +6,7 @@
 	include("phpManager/DBManager.php");
 
 	$DBManager = new DBManager; 
-	$DBManager->findBooksNumArray("雨");
+	$DBManager->findYearNumsArray("雨");
 	
 	/*
 	$result = $DBManager->queryIndex("雨");

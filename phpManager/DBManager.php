@@ -194,19 +194,75 @@
 			for($i = 0; $i < COUNT($titleArray); $i ++)
 				echo "<li><a href=# >".$titleArray[$i]."</a></li>";
 		}
-		//--	算文本數量
+		//--	算文本數量 用於第一個統計
 		function countBooksNum($bookID, $query) {
 			$query = "%".$query."%";
 			$result = $this->connection->query("SELECT COUNT(*) AS num FROM ".$this->bookID_Name[$bookID]." WHERE CONTEXT LIKE '$query'");
 			return $result;
 		}
-		//--	文本數量回陣列
+		//--	回傳文本數量陣列
 		function findBooksNumArray($query) {
 			$numArray = array();
 			for($i = 1; $i < 5; $i ++) {
 				$result = $this->countBooksNum($i, $query);
 				foreach ($result as $data)  {
 					array_push($numArray, $data['num']);
+				}
+			}
+			return json_encode($numArray);
+		}
+		//--	算君王年份數量 用於第二個統計
+		function  countYearNum($query) {
+			$query = "%".$query."%";
+			$result = $this->connection->query("SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM chunqiu WHERE CONTEXT LIKE '$query' UNION
+				SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM zuozhuan WHERE CONTEXT LIKE '$query' UNION 
+				SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM gongyang WHERE CONTEXT LIKE '$query' UNION 
+				SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM guliang WHERE CONTEXT LIKE '$query'  
+				ORDER BY `YEAR_START`  DESC");
+			return $result;
+		}
+		//--	回傳君王年份數量陣列
+		function findYearNumsArray($query) {
+			$numArray = array_fill(0, 13, 0);
+			$result = $this->countYearNum($query);
+			foreach ($result as $data)  {
+				switch ($data['TITLE']) {
+					case strpos($data['TITLE'], "魯隱公") :
+						$numArray[0] ++;
+						break;
+					case strpos($data['TITLE'], "魯桓公") :
+						$numArray[1] ++;
+						break;
+					case strpos($data['TITLE'], "魯莊公") :
+						$numArray[2] ++;
+						break;
+					case strpos($data['TITLE'], "魯閔公") :
+						$numArray[3] ++;
+						break;
+					case strpos($data['TITLE'], "魯僖公") :
+						$numArray[4] ++;
+						break;
+					case strpos($data['TITLE'], "魯文公") :
+						$numArray[5] ++;
+						break;
+					case strpos($data['TITLE'], "魯宣公") :
+						$numArray[6] ++;
+						break;
+					case strpos($data['TITLE'], "魯成公") :
+						$numArray[7] ++;
+						break;
+					case strpos($data['TITLE'], "魯襄公") :
+						$numArray[8] ++;
+						break;
+					case strpos($data['TITLE'], "魯昭公") :
+						$numArray[9] ++;
+						break;
+					case strpos($data['TITLE'], "魯定公") :
+						$numArray[10] ++;
+						break;
+					case strpos($data['TITLE'], "魯哀公") :
+						$numArray[11] ++;
+						break;	
 				}
 			}
 			return json_encode($numArray);

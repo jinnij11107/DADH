@@ -399,9 +399,9 @@
 						</div>
 						
 						<div class="col-sm-9 col-md-9" >
-							<canvas id="myChart" width="400" height="150%"></canvas>
+							<canvas id="firstChart" width="400" height="150%"></canvas>
 							<script>
-								var numArray = <?php echo $DBManager->findBooksNumArray($_GET['query']); ?>;
+								var $bookNumArray = <?php echo $DBManager->findBooksNumArray($_GET['query']); ?>;
 								var data = {
 									labels: ["春秋", "左傳", "公羊傳", "榖梁傳"],
 									datasets: [
@@ -410,17 +410,54 @@
 											backgroundColor: 'rgba(255, 206, 86, 0.2)',
 											borderColor: 'rgba(255, 206, 86, 1)', 
 											borderWidth: 2,
-											data: numArray,
+											data: $bookNumArray,
 										}
 									]
 								};
-								var myBarChart = new Chart($("#myChart"), {
+								var myBarChart = new Chart($("#firstChart"), {
 									type: 'bar',
 									data: data,
 									options: {
 										 title: {
 											display: true,
-											text: '檢索統計'
+											text: '文本檢索統計'
+										},
+										scales: {
+											xAxes: [{
+												stacked: true,
+												categoryPercentage: 0.5,
+												barPercentage: 1, 
+											}],
+											yAxes: [{
+												stacked: true
+											}]
+										}
+									}
+								});
+							</script>
+							
+							<canvas id="secondChart" width="500" height="150%"></canvas>
+							<script>
+								var $yearNumArray = <?php echo $DBManager->findYearNumsArray($_GET['query']); ?>;
+								var data = {
+									labels: ["隱公", "桓公", "莊公", "閔公", "僖公", "文公", "宣公", "成公", "襄公", "昭公", "定公", "哀公"],
+									datasets: [
+										{
+											label: "nums",
+											backgroundColor: 'rgba(255, 206, 86, 0.2)',
+											borderColor: 'rgba(255, 206, 86, 1)', 
+											borderWidth: 2,
+											data: $yearNumArray,
+										}
+									]
+								};
+								var myBarChart = new Chart($("#secondChart"), {
+									type: 'bar',
+									data: data,
+									options: {
+										 title: {
+											display: true,
+											text: '君王年代檢索統計'
 										},
 										scales: {
 											xAxes: [{
