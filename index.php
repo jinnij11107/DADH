@@ -92,7 +92,7 @@ function moveAnchor() {
 		        </li>
             	<li class="dropdown">
               		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">桓公 <span class="caret"></span></a>
-              		<ul class="dropdown-menu">
+              		<ul class="dropdown-menu" >
 	                	<li><a href="#魯桓公元年">元年</a></li>
 	                	<li><a href="#魯桓公二年">二年</a></li>
 		                <li><a href="#魯桓公三年">三年</a></li>
@@ -115,7 +115,7 @@ function moveAnchor() {
             	</li>
             	<li class="dropdown">
               		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">莊公<span class="caret"></span></a>
-              		<ul class="dropdown-menu">
+              		<ul class="dropdown-menu" >
 		                <li><a href="#魯莊公元年">元年</a></li>
 		                <li><a href="#魯莊公二年">二年</a></li>
 		                <li><a href="#魯莊公三年">三年</a></li>
