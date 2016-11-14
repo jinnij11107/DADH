@@ -4,24 +4,20 @@
 
 <?php
 	include("phpManager/DBManager.php");
-/*
+	
 	$DBManager = new DBManager; 
-	$DBManager->findYearNumsArray("雨");
+	$DBManager->insertion("context/parsedGongyang_new.txt", 3);
+	
+	/*
+	$DBManager = new DBManager; 
+	$DBManager->insertion("context\parsedGuliang_new.txt", 3);
 	*/
 	/*
 	$result = $DBManager->queryIndex("雨");
 	foreach ($result as $data) {
 		echo $data['TITLE']."</br>";
 		echo $data['CONTEXT']."</br>";
-	}*/
-	
-	$a = ["12", "22", "32"];
-	test($a);
-	print_r($a);
-		
-	function test(&$a) {
-		$a[0] .= "545";
-	}		
+	}*/	
 
 	//$DBManager->query_book(1);
 	//$result = $DBManager->query_book(2);

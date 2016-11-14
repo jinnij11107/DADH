@@ -63,18 +63,42 @@
 			<div class="col-sm-3 col-md-3 sidebar">	
 				<h1>檢索結果</h1>
 				<ul class = "nav nav-sidebar">
-					
-					<div class="panel-body" id="yearList" >
-						<h3><strong>依照君主年份</strong></h3>
-						<ul>
-							<?php $DBManager->groupByYear($_GET['query'], 1); ?>
-						</ul>
-					</div>
-					<div class="panel-body" id="seasonList">
-						<h3><strong>依照季節</strong></h3>
-						<ul>
-							<?php $DBManager->groupByYear($_GET['query'], 2); ?>
-						</ul>
+					<div role="tabpanel">
+					  <!-- Nav tabs -->
+					  <ul class="nav nav-tabs" role="tablist">
+						<li role="presentation" class="active"><a href="#yearList" aria-controls="yearList" role="tab" data-toggle="tab">君主年分</a></li>
+						<li role="presentation"><a href="#seasonList" aria-controls="seasonList" role="tab" data-toggle="tab">季節</a></li>
+						<li role="presentation"><a href="#monthList" aria-controls="monthList" role="tab" data-toggle="tab">月份</a></li>
+						<li role="presentation"><a href="#bookList" aria-controls="bookList" role="tab" data-toggle="tab">文本</a></li>
+					  </ul>
+
+					  <!-- Tab panes -->
+					  <div class="tab-content">
+						<div role="tabpanel" class="tab-pane active panel-body" id="yearList" >
+							<h3><strong>依照君主年分</strong></h3>
+							<ul>
+								<?php $DBManager->groupByYear($_GET['query'], 1); ?>
+							</ul>
+						</div>
+						<div role="tabpanel" class="tab-pane panel-body" id="seasonList">
+							<h3><strong>依照季節</strong></h3>
+							<ul>
+								<?php $DBManager->groupByYear($_GET['query'], 2); ?>
+							</ul>
+						</div>
+						<div role="tabpanel" class="tab-pane panel-body" id="monthList">
+							<h3><strong>依照月份</strong></h3>
+							<ul>
+								<?php $DBManager->groupByYear($_GET['query'], 3); ?>
+							</ul>
+						</div>
+						<div role="tabpanel" class="tab-pane panel-body" id="bookList">
+							<h3><strong>依照文本</strong></h3>
+							<ul>
+								<?php $DBManager->groupByYear($_GET['query'], 4); ?>
+							</ul>
+						</div>
+					  </div>
 					</div>
 				</ul>
 			</div>
