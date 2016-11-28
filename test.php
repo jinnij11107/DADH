@@ -6,7 +6,11 @@
 	include("phpManager/DBManager.php");
 	
 	$DBManager = new DBManager; 
-	$DBManager->insertion("context/parsedGongyang_new.txt", 3);
+	
+	similar_text("二年春，公會戎于潛。", "二年春，公會戎于潛。", $sim);
+	echo $sim;
+	
+	//$DBManager->inesrtToCollections();
 	
 	/*
 	$DBManager = new DBManager; 

@@ -20,6 +20,7 @@ $(document).on('click', '.dropdown-menu li a', function () {
 $( document ).ready(function() {
     $bookcase = $('.book');
 	$checked = [true, false, false, false, false ];
+	$scrollValue = [0, 0, 0, 0, 0];
 	
 	
 	$panel = $(".nav-sidebar");
@@ -39,66 +40,23 @@ $( document ).ready(function() {
 	for(var i = 0; i < text.length; i ++) {
 		for(var j = 0; j < text[i].lastElementChild.children.length; j ++) {
 			
-			$( text[i].lastElementChild.children[j].firstElementChild ) .click(function () {
+			$( text[i].lastElementChild.children[j].firstElementChild ).click(function () {
 				
 				findChunqiuByTitle(event.target.hash.replace("#", "") );
 				
 				for(var i = 0; i < $checked.length; i ++) {
+					
 					if( $checked[i] == true ) {
 						var slider = $( $bookcase[i].lastElementChild )[0];
 						var target = slider.getElementsByClassName( this.hash.replace("#", "") )[0];
 						$(slider).animate({
-							scrollTop: $(slider).scrollTop() + ( $(target).offset().top - $($(".nav-sidebar")[i]).offset().top )
+							scrollTop: $(slider).scrollTop() + ( $(target).offset().top - $(slider).offset().top )
 						}, 600);
 					}
 				}
 			});
 		}
 	}
-});
-
-//--	mouse listener
-$( document ).ready(function() {
-	var timeoutId;
-	
-	$('.text').mouseenter(function(){
-		var targetDiv = this.parentElement.parentElement.parentElement;
-
-		var targetIndex = $(this);
-		 if (!timeoutId) {
-			timeoutId = window.setTimeout(function() {
-
-				timeoutId = null; 
-				var title = targetDiv.className.split(" ")[3];
-				var $classArray = targetIndex.attr("class").split(" ");
-				var $blockArray = $("." + title);
-				$blockArray.splice($blockArray.index(targetDiv), 1);
-				for(var i = 0; i < $blockArray.length; i ++) {
-					fadeBlockIndex( findSibling($blockArray[i]) );
-					fadeTargetClass($blockArray[i].lastElementChild, $classArray);
-				}
-
-		   }, 500);
-		}
-	});
-
-	$('.text').mouseout(function(){
-		
-		if (timeoutId) {
-			window.clearTimeout(timeoutId);
-			timeoutId = null;
-		}
-		else {
-			$(this).css("background-color","rgb(255, 255, 255)");
-		   	var targetDiv = this.parentElement.parentElement.parentElement;
-			var title = targetDiv.className.split(" ")[3];
-			var $blockArray = $("." + title);
-			for(var i = 0; i < $blockArray.length; i ++) {
-				showBlockIndex( findSibling($blockArray[i]) );
-				showTargetClass($blockArray[i]);
-			}
-		}
-	});
 });
 
 //--	detach other
@@ -109,14 +67,8 @@ $( document ).ready(function() {
 });
 
 
-
-
-
-
-
 //--	function
 function show_page(span) {
-	findChunqiuByTitle("魯隱公元年");
 	$label = span.children;
 	var count = 1;
 	for(var i = 1; i < $label.length; i ++) {
@@ -128,7 +80,6 @@ function show_page(span) {
 			$checked[i] = false;
 		}
 	}
-	
 	switch(count) {
 		case 1:
 			var col = 12;
@@ -174,7 +125,18 @@ function show_page(span) {
 			}
 			break;
 	}
-	
+	setScrollValueAll();
+}
+
+function getScrollValueAll(target, i) {
+	console.log(target.lastElementChild.scrollTop);
+	$scrollValue[i] = target.lastElementChild.scrollTop;
+}
+
+function setScrollValueAll() {
+	for(var i = 0; i < $bookcase.length; i ++) {
+		$bookcase[i].lastElementChild.scrollTop = $scrollValue[i];
+	}
 }
 
 function changeBook(book, number) {
@@ -232,8 +194,7 @@ function showTargetClass(targetDiv) {
 }
 
 function findChunqiuByTitle(title) {
-	
-	$indexArray = $($bookcase[0]).find("." + title).find('.panel-body')[0].children;
+	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
 	$("#Ctitle").empty();
 	$("#Ctitle").append('<li role="presentation" class="dropdown-header">' + title + '</li>');
 	$("#Ctitle").append('<li role="presentation" class="divider"></li>');
@@ -243,9 +204,11 @@ function findChunqiuByTitle(title) {
 	$('#spanTitle')[0].innerHTML = $indexArray[0].innerText;
 }
 
-function findCgunqiuByIndex(classSelectot, title) {
-	$indexArray = $($bookcase[0]).find("." + title).find('.panel-body')[0].children;
-	var $temp = $( $indexArray ).find(classSelectot);
+function findCgunqiuByIndex(classSelector, title) {
+
+	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
+	var $temp = $( $indexArray ).filter(classSelector);
+	console.log($temp);
 	if( $temp.length == 0) findChunqiuByTitle(title);
 	else {
 		$("#Ctitle").empty();
@@ -254,7 +217,13 @@ function findCgunqiuByIndex(classSelectot, title) {
 		for(var i = 0; i < $indexArray.length; i ++) {
 			$("#Ctitle").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >' + $indexArray[i].innerText+ '</a></li>');
 		}
-		$('#spanTitle')[0].innerHTML = $temp[0].innerText;
+		var index = "";
+		for(var i = 0; i < $temp.length; i ++) {
+			index += "<span class='glyphicon glyphicon-tag' aria-hidden='true'></span>  "
+			index += $temp[i].innerText;
+			index += " ";
+		}
+		$('#spanTitle')[0].innerHTML = index;
 	}
 }
 

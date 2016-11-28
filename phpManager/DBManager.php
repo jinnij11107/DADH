@@ -1,14 +1,15 @@
 <?php
 	class DBManager{
 		//attribute
-		/*
-		private $dbhost = '140.112.30.226:17003';
+		
+		private $dbhost = '140.112.30.226:13003';
 		private $dbuser = 'test';
 		private $dbpass = 'lab303';
-		*/
+		
+		/*
 		private $dbhost = '127.0.0.1:3306';
 		private $dbuser = 'root';
-		private $dbpass = '';
+		private $dbpass = '';*/
 		private $dbname = 'chunqiusys3';
 		private $connection;
 		
@@ -58,27 +59,29 @@
 					$classYear.=" ".substr($start, 0,5).$temp;
 				}
 				if($item['TITLE'] == $title) {
-					$content.="<li><a href='#$classYear' class=\"text".$classYear."\" id=\"".$start."\" onclick='moveAnchor()' style='color:rgb(0, 0, 0)'>".$data['CONTEXT']."</a></li>";		
+					$content.="<a href='#$classYear' class=\"list-group-item text".$classYear."\" id=\"".$start."\" onclick='moveAnchor()' style='color:rgb(0, 0, 0)'>".$data['CONTEXT']."</a>";		
 				} else {
 					if( $title != "") {
 						echo "<div class='panel panel-default block $title' name='$title'>";
-						//echo "<div class='title panel-heading'><button type='button' class='btn btn-default'><span class='glyphicon glyphicon-align-justify' /></button>";
-						echo "<div class='title panel-heading' style='font-size: 16pt;'>";
-						echo "$title</div>";
-						echo "<div class='panel-body'>$content</div>";
+						echo "<div class='title panel-heading' style='background-color:lightsteelblue;font-size: 16pt;'>$title</div>";
+						echo "<div class='list-group'>$content</div>";
 						echo "</div>";
 					}
 					$title = "";
 					$content = "";
 					
 					$title = $data['TITLE'];
-					$content.="<li><a href=\"#$classYear\" class=\"text".$classYear."\" id=\"".$start."\" onclick='moveAnchor()' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a></li>";
+					$content.="<a href=\"#$classYear\" class=\"list-group-item text".$classYear."\" id=\"".$start."\" onclick='moveAnchor()' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a>";
 				}
 			}
 		}
 		//--	插入文本
 		function insertion($filePath, $bookcaseId) {
+			
+			
+			
 			$target = $this->bookID_Name[$bookcaseId];
+			$this->connection->query("TRUNCATE TABLE $target");
 			$stmt = $this->connection->prepare("INSERT INTO $target ( TITLE, SEASON, MONTH, DAY, CONTEXT, YEAR_START, YEAR_END) 
 						VALUES(:title, :season, :month, :day, :context, :yearStart, :yearEnd)");
 			
@@ -116,7 +119,7 @@
 		}
 		//--	插入文本至collections
 		function inesrtToCollections() {
-			
+			$this->connection->query("TRUNCATE TABLE collections");
 			for($i = 1; $i < 5; $i ++) {
 				$target = $target = $this->bookID_Name[$i];
 				$result = $this->connection->query("SELECT * FROM $target");
@@ -149,40 +152,50 @@
 		}
 		
 		//--	檢索所有文本
-		function queryIndex($query) {
+		function queryIndex($query, $flag) {
 			$query = "%".$query."%";
-			$result = $this->connection->query("SELECT * FROM collections WHERE CONTEXT LIKE '$query' ORDER BY YEAR_START DESC, BOOKCASE_ID");
+			$result = "SELECT * FROM collections WHERE CONTEXT LIKE '$query' && ( BOOKCASE_ID = 5";
+			
+			for( $i = 0; $i < count($flag) - 1; $i ++) {
+				if( $flag[$i] == true) {
+					$result .= "|| BOOKCASE_ID = ";
+					$result .=$i+1;
+				}
+			}
+			$result .= ") ORDER BY YEAR_START DESC, BOOKCASE_ID";
+			$result = $this->connection->query($result);
 			return $result;
 		}
+		
 		//--	插入檢索文本
-		function queryIndexAndSet($query) {
-			$result = $this->queryIndex( $query );
+		function queryIndexAndSet($query, $flag) {
+			$result = $this->queryIndex( $query, $flag);
 			$bookArray = [[], [], [], [], []];
 			//--	TODO將來要改
 			foreach ($result as $data) {
 				$title = $data['TITLE'];
 				$bookId = $data['BOOKCASE_ID'];
-				array_push($bookArray[$bookId], "<li>".$data['CONTEXT']."</li>");
+				array_push($bookArray[$bookId], "<li class='list-group-item' >".$data['CONTEXT']."</li>");
 				break;
 			}
 			foreach ($result as $data) {
 				if($title == $data['TITLE']) {
 					if($bookId == $data['BOOKCASE_ID']) {
-						array_push($bookArray[$bookId], "<li>".$data['CONTEXT']."</li>");
+						array_push($bookArray[$bookId], "<li class='list-group-item'>".$data['CONTEXT']."</li>");
 					} else {
 						$bookId = $data['BOOKCASE_ID'];
-						array_push($bookArray[$bookId], "<li>".$data['CONTEXT']."</li>");
+						array_push($bookArray[$bookId], "<li class='list-group-item'>".$data['CONTEXT']."</li>");
 					}
 				} else {
 					echo "<div class='panel panel-default block $title' name='$title'>";
-					echo "<div class='title panel-heading'>";
+					echo "<div style='background-color:lightsteelblue;' class='title panel-heading'>";
 					echo "$title</div>";
 					echo "<div class='panel-body'>";
 					for($i = 0; $i < count($bookArray); $i ++) {
 						if($bookArray[$i] != []) {
 							$bookArray[$i] = array_reverse( $bookArray[$i] );
 							echo "<h4>".$this->bookcase_ID[$i]."<h4>";
-							echo "<ul>";
+							echo "<ul class='list-group' >";
 							for( $j = 0; $j < count($bookArray[$i]); $j ++) {
 								$bookArray[$i][$j] = str_replace($query, "<kbd style='background-color: #5F5F3F' >".$query."</kbd>", $bookArray[$i][$j]);
 								echo $bookArray[$i][$j];
@@ -196,7 +209,7 @@
 					$title = $data['TITLE']	;
 					$bookArray = [[], [], [], [], []];
 					$bookId = $data['BOOKCASE_ID'];
-					array_push($bookArray[$bookId], "<li>".$data['CONTEXT']."</li>");
+					array_push($bookArray[$bookId], "<li class='list-group-item'>".$data['CONTEXT']."</li>");
 				}
 			}
 			echo "<div class='panel panel-default block $title' name='$title'>";
@@ -249,7 +262,7 @@
 		
 		//*****************************  query page retrive  *****************************//
 		//--	group by kingYear
-		function groupByYear($query, $selector) {
+		function groupBy($query, $selector, $flag) {
 			//--	1 -> kingYear 2 -> season 3 -> month 4 -> book
 			
 			//--	ini
@@ -257,25 +270,25 @@
 				//--	group by kingYear
 				case 1:
 					$classificationArray = [ [], [], [], [], [], [], [], [], [], [], [], []];
-					$titleArray = $this->importKingYear($query);
+					$titleArray = $this->importKingYear($query, $flag);
 					$selectorArray = $this->kingName;
 				break;
 				//--	group by season
 				case 2 :
 					$classificationArray = [ [], [], [], [], ];
-					$titleArray = $this->importSeason($query);
+					$titleArray = $this->importSeason($query, $flag);
 					$selectorArray = $this->seasonName;
 				break;
 				//--	group by month
 				case 3 :
 					$classificationArray = [ [], [], [], [], [], [], [], [], [], [], [], []];
-					$titleArray = $this->importMonth($query);
+					$titleArray = $this->importMonth($query, $flag);
 					$selectorArray = $this->monthName;
 				break;
 				//--	group by book
 				case 4 :
 					$classificationArray = [ [], [], [], [], ];
-					$titleArray = $this->importBook($query);
+					$titleArray = $this->importBook($query, $flag);
 					$selectorArray = $this->bookName;
 				break;
 			}
@@ -301,90 +314,7 @@
 				echo "</ul></div></div>";
 			}
 			echo "</div>";
-			/*
-			//--	kingYear
-			if($selector == 1) {
-				$arraySize = 12;
-				$selectorArray = $this->kingName;
-				//--	data import
-				$titleArray = $this->importKingYear($query);
-			} 
-			//--	season
-			else if($selector == 2) {
-				$arraySize = 4;
-				$selectorArray = $this->seasonName;
-				//--	data import
-				$titleArray = $this->importSeasonYear($query);
-			} else if( $selector == 3 ) {
-				$arraySize = 4;
-				$selectorArray = $this->bookName;
-				$titleArray = $this->queryIndexDirectory($query);
-			}
 			
-			//--	data ini
-			$resultCountArray = [];
-			$resultData = [];
-			for($i = 0; $i < $arraySize; $i ++) {
-				$resultData[$i] = "";
-				$resultCountArray[$i] = 0;
-			}
-			
-			if($selector == 1) {
-				$titleHash = [];
-				foreach ($titleArray as $data) {
-					if( !in_array($data, $titleHash) ) {
-						
-						array_push($titleHash, $data);
-						$findValue = mb_substr($data, 0, 3);
-						$key = array_search($findValue, $selectorArray);
-						
-						$resultData[$key] .= "<li class='list-group-item'> <a href = '#'>" . $data . "</a></li>";
-						$resultCountArray[$key] ++;
-					} 
-				}
-			} 
-			else if($selector == 2) {
-				$titleHash = [];
-				foreach ($titleArray as $data) {
-					if( !in_array($data, $titleHash) ) {
-						array_push($titleHash, $data);
-						$findValue = explode("_", $data)[1];
-						
-						$key = array_search($findValue, $selectorArray);
-							
-						$resultData[$key] .= "<li class='list-group-item'><a href = '#'>" . explode("_", $data)[0] . "</a></li>";
-						$resultCountArray[$key] ++;
-					}
-				}
-			}
-			else if($selector == 3) {
-
-				foreach ($titleArray as $data) {
-
-					$key = $data['BOOKCASE_ID'] - 1;
-					$resultData[$key] .= "<li class='list-group-item'><a href = '#'>" . $data['TITLE'] . "</a></li>";
-					$resultCountArray[$key] ++;
-				}
-				
-			}
-			
-
-			//--	divFront ini
-			$resultArray = [];
-			for($i = 0; $i < $arraySize; $i ++) {
-				$resultArray[$i] = $this->getQueryGroupFront($selector, $i, $selectorArray[$i], $resultCountArray[$i]);
-			}
-			
-			//--	echo
-			echo "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
-			for($i = 0; $i < $arraySize; $i ++) {
-				//if( $resultData[$i] == "" ) $resultData[$i] = "<li class='list-group-item'>沒有資訊</li>";
-				$resultArray[$i].= $resultData[$i];
-				$resultArray[$i] .= "</ul></div></div>";
-				echo $resultArray[$i];
-			}
-			echo "</div>";
-			*/
 		}
 		
 		//--	算文本數量 用於第一個統計
@@ -407,17 +337,13 @@
 		//--	算君王年份數量 用於第二個統計
 		function  countYearNum($query) {
 			$query = "%".$query."%";
-			$result = $this->connection->query("SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM chunqiu WHERE CONTEXT LIKE '$query' UNION
-				SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM zuozhuan WHERE CONTEXT LIKE '$query' UNION 
-				SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM gongyang WHERE CONTEXT LIKE '$query' UNION 
-				SELECT `TITLE`, `CONTEXT`, `YEAR_START` FROM guliang WHERE CONTEXT LIKE '$query'  
-				ORDER BY `YEAR_START`  DESC");
+			$result = $this->connection->query("SELECT * FROM collections WHERE CONTEXT LIKE '$query' ORDER BY YEAR_START DESC, BOOKCASE_ID");
 			return $result;
 		}
 		//--	回傳君王年份數量陣列
-		function findYearNumsArray($query) {
+		function findYearNumsArray($query, $flag) {
 			$numArray = array_fill(0, 13, 0);
-			$result = $this->countYearNum($query);
+			$result = $this->queryIndex($query, $flag);
 			foreach ($result as $data)  {
 				switch ($data['TITLE']) {
 					case strpos($data['TITLE'], "魯隱公") :
@@ -484,8 +410,8 @@
 		//--	use to get # of kingYear data
 		//--	input query
 		//--	output array of kingYearData
-		function importKingYear($query) {
-			$result = $this->queryIndexDirectory( $query );
+		function importKingYear($query, $flag) {
+			$result = $this->queryIndex( $query, $flag);
 			$titleArray = [];
 			foreach ($result as $data) {
 				$findValue = mb_substr($data['TITLE'], 0, 3);
@@ -499,9 +425,9 @@
 		//--	use to get # of seasonYear data
 		//--	input query
 		//--	output array of seasonYear
-		function importSeason($query) {
+		function importSeason($query, $flag) {
 			
-			$result = $this->queryIndexDirectory( $query );
+			$result = $this->queryIndex( $query, $flag );
 			$titleArray = [];
 			foreach ($result as $data) {
 				if( $data['SEASON'] != "") {
@@ -514,18 +440,22 @@
 			return $titleArray;
 		}
 		
-		function importMonth( $query ) {
-			$result = $this->queryIndexDirectory( $query );
+		function importMonth( $query, $flag) {
+			$result = $this->queryIndex( $query, $flag);
 			$titleArray = [];
 			foreach ($result as $data) {
+				if($data['MONTH'] != "") {
+					array_push($titleArray, $data['TITLE'] . "_" . $data['MONTH'] );
+				}
+				/*
 				$month = explode( "-", $data['YEAR_START'])[1];
-				array_push($titleArray, $data['TITLE'] . "_" . $this->monthToMonth[$month] );
+				array_push($titleArray, $data['TITLE'] . "_" . $this->monthToMonth[$month] );*/
 			}
 			return $titleArray;
 		}
 		
-		function importBook( $query ) {
-			$result = $this->queryIndexDirectory( $query );
+		function importBook( $query, $flag) {
+			$result = $this->queryIndex( $query, $flag);
 			$titleArray = [];
 			foreach ($result as $data) {
 				$bookNum = $data['BOOKCASE_ID'] - 1;
