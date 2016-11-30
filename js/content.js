@@ -1,20 +1,8 @@
-/*
-$(document).on('click', '.dropdown-toggle', function () {
-    //console.log("Selected Option:"+$(this).text());
-    var el = document.getElementById('age');
-    var h = el.getElementsByTagName("h4");
-    var old = "年號：";
-    h[1].innerHTML = old + $(this).text();
-});
 
 $(document).on('click', '.dropdown-menu li a', function () {
-    //console.log("Selected Option:"+$(this).text());
-    var el = document.getElementById('age');
-    var h = el.getElementsByTagName("h4");
-    var old = h[1].innerHTML;
-    h[1].innerHTML = old + $(this).text();
-    h[0].innerHTML = h[1].innerHTML;
-});*/
+    var year = "年號:" + this.hash.replace("#", "");
+	changeYearName(year);
+});
 
 //--	container initialization
 $( document ).ready(function() {
@@ -201,15 +189,26 @@ function findChunqiuByTitle(title) {
 	for(var i = 0; i < $indexArray.length; i ++) {
 		$("#Ctitle").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >' + $indexArray[i].innerText+ '</a></li>');
 	}
-	$('#spanTitle')[0].innerHTML = $indexArray[0].innerText;
+	$('#spanTitle')[0].innerHTML = "<span class='glyphicon glyphicon-tag' aria-hidden='true'></span>  " + $indexArray[0].innerText;
+}
+
+function missChunqiuByTitle(title) {
+	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
+	$("#Ctitle").empty();
+	$("#Ctitle").append('<li role="presentation" class="dropdown-header">' + title + '</li>');
+	$("#Ctitle").append('<li role="presentation" class="divider"></li>');
+	for(var i = 0; i < $indexArray.length; i ++) {
+		$("#Ctitle").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >' + $indexArray[i].innerText+ '</a></li>');
+	}
+	$('#spanTitle')[0].innerHTML = "<span class='glyphicon glyphicon-tag' aria-hidden='true'></span>  沒有對應的條目";
 }
 
 function findCgunqiuByIndex(classSelector, title) {
 
 	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
 	var $temp = $( $indexArray ).filter(classSelector);
-	console.log($temp);
-	if( $temp.length == 0) findChunqiuByTitle(title);
+	
+	if( $temp.length == 0) missChunqiuByTitle(title);
 	else {
 		$("#Ctitle").empty();
 		$("#Ctitle").append('<li role="presentation" class="dropdown-header">' + title + '</li>');
@@ -239,4 +238,9 @@ function missAlert(target) {
 			})
 		}, i * 1000);
 	}
+}
+
+function changeYearName(yearName) {
+	var yearBlock = $("#year")[0];
+	yearBlock.innerHTML = yearName;
 }

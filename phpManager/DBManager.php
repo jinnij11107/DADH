@@ -1,15 +1,15 @@
 <?php
 	class DBManager{
 		//attribute
-		
+		/*
 		private $dbhost = '140.112.30.226:13003';
 		private $dbuser = 'test';
 		private $dbpass = 'lab303';
+		*/
 		
-		/*
 		private $dbhost = '127.0.0.1:3306';
 		private $dbuser = 'root';
-		private $dbpass = '';*/
+		private $dbpass = '';
 		private $dbname = 'chunqiusys3';
 		private $connection;
 		

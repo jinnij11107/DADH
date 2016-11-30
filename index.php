@@ -38,6 +38,9 @@
 function moveAnchor() {
 	
 	var parentBlock = event.target.parentElement.parentElement;
+	//--	更改年號標記
+	changeYearName("年號:" + parentBlock.getAttribute("name"));
+	
 	var $timeArray = event.target.className.split(" ");//0 is text, >= 1 is time
 	var classSelector = "";
 	for(var i = 2; i < $timeArray.length; i ++) classSelector += "a." + $timeArray[i] + ", ";
@@ -47,23 +50,57 @@ function moveAnchor() {
 	for(var i = 0; i < $blockArray.length; i ++) {
 		$anchorArray.push(0);
 	}
+	//--	消除上一次點選所標記的
 	clearTagedArray();
+	clearMissArray();
+	
+	//--	從中尋找並標上顏色
 	for(var i = 0; i < $blockArray.length; i ++) {
 		var $temp = $( $blockArray[i].lastElementChild ).find(classSelector);
-		changeBackGroundColor($temp);
-		if( $temp.length > 0) $anchorArray[i] = $( $temp[0] ).offset().top ;
+		
+		if( $temp.length > 0) {
+			//--	有找到
+			changeBackGroundColor($temp);
+			if( $blockArray[i] == parentBlock) {
+				$anchorArray[i] = 200 + $(parentBlock.parentElement).offset().top;
+			} else {
+				$anchorArray[i] = $( $temp[0] ).offset().top ;
+			}
+		}
 		else {
-			$anchorArray[i] = $( $blockArray[i] ).offset().top 
-			missAlert( $($blockArray[i]) );
+			//--	沒有找到
+			var timeTarget = classSelector.split(".")[1].split("-")[1];
+			for(var j = $blockArray[i].lastElementChild.childNodes.length - 1; j >= 0; j --) {
+				$timeHref = $blockArray[i].lastElementChild.childNodes[j].hash.split(" ");
+				if( timeTarget > $timeHref[1].split("-")[1] ) {
+					$($blockArray[i].lastElementChild.childNodes[j]).attr('style', 'color:rgb(0, 0, 0);border-bottom-color:red;border-bottom-width:5px');
+					$($blockArray[i].lastElementChild.childNodes[j]).attr('class', $blockArray[i].lastElementChild.childNodes[j].className + " miss");
+					if( typeof $blockArray[i].lastElementChild.childNodes[j+1] === "undefined" ) {
+						$anchorArray[i] = $($blockArray[i].lastElementChild.childNodes[$blockArray[i].lastElementChild.childNodes.length-1]).offset().top;
+						$($blockArray[i]).attr('style', 'border-bottom-color:red;border-bottom-width:5px');
+						$($blockArray[i]).attr('class', $blockArray[i].className + " miss");
+					} else {
+						$anchorArray[i] = $($blockArray[i].lastElementChild.childNodes[j+1]).offset().top;
+					}
+					break;
+				}else {
+					$($blockArray[i].lastElementChild.childNodes[0]).attr('style', 'color:rgb(0, 0, 0);border-top-color:red;border-top-width:5px');
+					$($blockArray[i].lastElementChild.childNodes[0]).attr('class', $blockArray[i].lastElementChild.childNodes[j].className + " miss");
+					$anchorArray[i] = $($blockArray[i].lastElementChild.childNodes[0]).offset().top;
+				}
+			}
 		}
 	}
+	
+	//--	移動到該位置
 	var window_gap = $($(".nav-sidebar")[0]).offset().top;
 	for(var i = 0; i < $anchorArray.length; i ++) {
 		$($(".nav-sidebar")[i]).animate({
-			scrollTop: $( $(".nav-sidebar")[i] ).scrollTop() + $anchorArray[i] - $($(".nav-sidebar")[i]).offset().top -60
+			scrollTop: $( $(".nav-sidebar")[i] ).scrollTop() + $anchorArray[i] - $($(".nav-sidebar")[i]).offset().top -200
 		}, 600);
 	}
 	
+	//--	對應春秋的條目
 	findCgunqiuByIndex(classSelector, parentBlock.className.split(" ")[3]);
 	
 	function changeBackGroundColor( $targetArray ) {
@@ -76,7 +113,15 @@ function moveAnchor() {
 		var tagedArray = $(".taged");
 		for(var i = 0; i < tagedArray.length; i ++) {
 			$(tagedArray[i]).removeClass("taged");
-			$(tagedArray[i]).attr("style", "background-color:white");
+			$(tagedArray[i]).attr("style", "background-color:white;color:rgb(0, 0, 0)");
+		}
+	}
+	
+	function clearMissArray() {
+		var tagedArray = $(".miss");
+		for(var i = 0; i < tagedArray.length; i ++) {
+			$(tagedArray[i]).removeClass("miss");
+			$(tagedArray[i]).attr("style", "color:rgb(0, 0, 0)");
 		}
 	}
 }
@@ -411,17 +456,17 @@ function moveAnchor() {
           		</ul>
 
 				<!-- <h5>請勾選欲顯示書目<h5> -->
-				<div class="row" style="margin-top:7px">
+				<div class="row" style="margin-top:5px">
 				
 				<span id="books" >
-					<button type="button" class="btn btn-primary" onclick="show_page(this.parentElement)">切換文本</button>
-					<label style="font-size:16px" class="checkbox-inline">
+					<button type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >切換文本</button>
+					<label style="font-size:14px" class="checkbox-inline">
 					  <input type="checkbox" value="1" >左傳
 					</label>
-					<label style="font-size:16px" class="checkbox-inline">
+					<label style="font-size:14px" class="checkbox-inline">
 					  <input type="checkbox" value="2" >公羊傳
 					</label>
-					<label style="font-size:16px" class="checkbox-inline">
+					<label style="font-size:14px" class="checkbox-inline">
 					  <input type="checkbox" value="3" >穀梁傳
 					</label>
 				</span>	
@@ -440,15 +485,15 @@ function moveAnchor() {
     </nav>
 
     <!-- Show 選擇年號 -->
-<!--
-    <div class="container-fluid" id="age">
-    	<h4 class="visible"> 年號：</h4>
-    	<h4 class="hidden"> 年號：</h4>
-    </div>
--->
+    
+
 
 	<div class="dropdown">
-		<button  class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		<span id="year" class="label label-primary" style="margin-left:5px;font-size:18px"> 
+			年號:魯隱公元年
+		</span>
+		
+		<button  class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:5px;margin-bottom:5px">
 			春秋條目&nbsp;
 			<span class="caret"></span>
 		</button>
@@ -466,7 +511,6 @@ function moveAnchor() {
 		<span id="spanTitle" ><span class='glyphicon glyphicon-tag' aria-hidden='true'></span>元年，春，王正月。</span>
 	</div>
 
-
     <!-- Main board -->
     <div class="container-fluid" >
     	<div class="row">
@@ -474,28 +518,28 @@ function moveAnchor() {
 				<div class="col-sm-12 col-md-12">
 					<div class="row">
 					    <div class="book col-sm-12 content">
-							<h1 class="page-header">春秋</h1>
+							<h1 class="page-header" style="font-size:24px" >春秋</h1>
 							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(1);?>
 							</ul>
 						</div>
 						
 						<div class="book col-sm-4 content hidden">
-							<h1 class="page-header">左傳</h1>
+							<h1 class="page-header" style="font-size:24px" >左傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(2);?>
 							</ul>
 						</div>
 						
 						<div class="book col-sm-4 content hidden">
-							<h1 class="page-header">公羊傳</h1>
+							<h1 class="page-header" style="font-size:24px" >公羊傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(3);?>
 							</ul>
 						</div>
 						
 						<div class="book col-sm-4 content hidden">
-							<h1 class="page-header">穀梁傳</h1>
+							<h1 class="page-header" style="font-size:24px" >穀梁傳</h1>
 							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(4);?>
 							</ul>
