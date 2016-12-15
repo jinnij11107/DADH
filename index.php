@@ -45,6 +45,7 @@ function moveAnchor() {
 	var classSelector = "";
 	for(var i = 2; i < $timeArray.length; i ++) classSelector += "a." + $timeArray[i] + ", ";
 	classSelector = classSelector.substr(0, classSelector.length - 2);
+	console.log(classSelector);
 	var $blockArray = $("." + parentBlock.className.split(" ")[3]);
 	var $anchorArray = [];
 	for(var i = 0; i < $blockArray.length; i ++) {
@@ -59,6 +60,16 @@ function moveAnchor() {
 		var $temp = $( $blockArray[i].lastElementChild ).find(classSelector);
 		
 		if( $temp.length > 0) {
+			if( classSelector.split(" ").length == 1) {
+				var $onlyArray = [];
+				for(var k = 0; k < $temp.length; k ++) {
+					if( $temp[k].className.split(" ").length == 3 ) {
+						$onlyArray.push($temp[k]);
+					}
+				}
+				if($onlyArray.length > 0) $temp = $onlyArray;
+			}
+			
 			//--	有找到
 			changeBackGroundColor($temp);
 			if( $blockArray[i] == parentBlock) {
