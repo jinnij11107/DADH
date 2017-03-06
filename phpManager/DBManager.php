@@ -59,7 +59,7 @@
 					$classYear.=" ".substr($start, 0,5).$temp;
 				}
 				if($item['TITLE'] == $title) {
-					$content.="<a href='#$classYear' class=\"list-group-item text".$classYear."\" id=\"".$start."\" onclick='moveAnchor()' style='color:rgb(0, 0, 0)'>".$data['CONTEXT']."</a>";		
+					$content.="<a href='#$classYear' class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event)' style='color:rgb(0, 0, 0)'>".$data['CONTEXT']."</a>";		
 				} else {
 					if( $title != "") {
 						echo "<div class='panel panel-default block $title' name='$title'>";
@@ -71,7 +71,7 @@
 					$content = "";
 					
 					$title = $data['TITLE'];
-					$content.="<a href=\"#$classYear\" class=\"list-group-item text".$classYear."\" id=\"".$start."\" onclick='moveAnchor()' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a>";
+					$content.="<a href=\"#$classYear\" class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event)' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a>";
 				}
 			}
 		}
@@ -157,8 +157,8 @@
 			$result = "SELECT * FROM collections WHERE CONTEXT LIKE '$query' && ( BOOKCASE_ID = 5";
 			
 			for( $i = 0; $i < count($flag) - 1; $i ++) {
-				if( $flag[$i] == true) {
-					$result .= "|| BOOKCASE_ID = ";
+				if( $flag[$i] == "true") {
+					$result .= " || BOOKCASE_ID = ";
 					$result .=$i+1;
 				}
 			}
@@ -478,7 +478,25 @@
 			
 			
 		}
-		
-		
+
+		function queryAjax($query, $flag) {
+
+			$result = $this->queryIndex( $query, $flag);
+			$bookArray = [];
+
+
+			foreach ($result as $data) {
+				$entry = [];
+				$entry['title'] = $data['TITLE'];
+				$entry['bookcaseId'] = $data['BOOKCASE_ID'];
+				$entry['context'] = $data['CONTEXT'];
+				$entry['yearStart'] = $data['YEAR_START'];
+				$entry['yearEnd'] = $data['YEAR_END'];
+				$entry['season'] = $data['SEASON'];
+				
+				array_push($bookArray,$entry);
+			}
+			return $bookArray;
+		}
 	}
 ?>

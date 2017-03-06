@@ -1,6 +1,6 @@
 
 $(document).on('click', '.dropdown-menu li a', function () {
-    var year = "年號:" + this.hash.replace("#", "");
+    var year = this.hash.replace("#", "");
 	changeYearName(year);
 });
 
@@ -10,14 +10,15 @@ $( document ).ready(function() {
 	$checked = [true, false, false, false, false ];
 	$scrollValue = [0, 0, 0, 0, 0];
 	
-	
 	$panel = $(".nav-sidebar");
 	
 	var h = document.body.scrollHeight;
 	var t = $($(".nav-sidebar")[0]).offset().top;
-	for(var i = 0; i < $panel.length; i ++) {
+	for(var i = 0; i < $panel.length - 1; i ++) {
 		$($panel[i]).height(h - t - 5);
 	}
+	$('#queryDiv').height(h-80);
+	$("#querySidebar").height(h-80);
 });
 
 //--	dropdown bar action listener
@@ -130,7 +131,7 @@ function setScrollValueAll() {
 function changeBook(book, number) {
 	$( book ).attr("class","book col-sm-" + number + " content");
 }
-
+/*
 function findSibling(targetDiv) {
 	var array = new Array();
 	var temp = targetDiv;
@@ -147,17 +148,17 @@ function findSibling(targetDiv) {
 	}
 	return array;
 }
-
+/*
 function fadeBlockIndex(divArray) {
 	for(var j = 0; j < divArray.length; j ++)
 		$(divArray[j].lastChild).fadeTo("fast", 0.2);
-}
-
+}*/
+/*
 function showBlockIndex(divArray) {
 	for(var j = 0; j < divArray.length; j ++)
 		$(divArray[j].lastChild).fadeTo("fast", 1);
-}
-
+}*/
+/*
 function fadeTargetClass(blockQuote, $classArray) {
 	var indexContainer = new Array();
 	for(var i = 0; i < blockQuote.childNodes.length; i ++) 
@@ -174,12 +175,12 @@ function fadeTargetClass(blockQuote, $classArray) {
 	}
 	for(var i = 0; i < indexContainer.length; i ++)
 		$( indexContainer[i] ).fadeTo("fast", 0.2);
-}
-
+}*/
+/*
 function showTargetClass(targetDiv) {
 	for(var i = 0; i < targetDiv.lastChild.childNodes.length; i ++) 
 		$( targetDiv.lastChild.childNodes[i] ).fadeTo("fast", 1);
-}
+}*/
 
 function findChunqiuByTitle(title) {
 	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
@@ -200,7 +201,7 @@ function missChunqiuByTitle(title) {
 	for(var i = 0; i < $indexArray.length; i ++) {
 		$("#Ctitle").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >' + $indexArray[i].innerText+ '</a></li>');
 	}
-	$('#spanTitle')[0].innerHTML = "<span class='glyphicon glyphicon-tag' aria-hidden='true'></span>  沒有對應的條目";
+	$('#spanTitle')[0].innerHTML = "<span class='glyphicon glyphicon-tag' aria-hidden='true' style='color:red' > 沒有對應的條目</span>";
 }
 
 function findCgunqiuByIndex(classSelector, title) {
@@ -223,20 +224,6 @@ function findCgunqiuByIndex(classSelector, title) {
 			index += " ";
 		}
 		$('#spanTitle')[0].innerHTML = index;
-	}
-}
-
-function missAlert(target) {
-	for (var i = 1; i < 3; i++) {
-		setTimeout(function() {
-			target.animate({
-				backgroundColor: "rgb(239, 220, 220)"
-			}, 'slow', function() {
-				target.animate({
-					backgroundColor: "white"
-				}, 'slow')
-			})
-		}, i * 1000);
 	}
 }
 
