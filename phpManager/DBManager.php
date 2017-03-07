@@ -59,7 +59,7 @@
 					$classYear.=" ".substr($start, 0,5).$temp;
 				}
 				if($item['TITLE'] == $title) {
-					$content.="<a href='#$classYear' class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event)' style='color:rgb(0, 0, 0)'>".$data['CONTEXT']."</a>";		
+					$content.="<a href='#$classYear' class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event);' style='color:rgb(0, 0, 0)'>".$data['CONTEXT']."</a>";		
 				} else {
 					if( $title != "") {
 						echo "<div class='panel panel-default block $title' name='$title'>";
@@ -71,14 +71,12 @@
 					$content = "";
 					
 					$title = $data['TITLE'];
-					$content.="<a href=\"#$classYear\" class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event)' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a>";
+					$content.="<a href=\"#$classYear\" class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event);' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a>";
 				}
 			}
 		}
 		//--	插入文本
 		function insertion($filePath, $bookcaseId) {
-			
-			
 			
 			$target = $this->bookID_Name[$bookcaseId];
 			$this->connection->query("TRUNCATE TABLE $target");

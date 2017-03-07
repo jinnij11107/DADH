@@ -24,7 +24,9 @@
     <script src="js/highlight.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	
+	<!-- jQuery chart bar ) -->
+	<script src="js/Chart.bundle.js"></script>
+
 	<!-- myFunction -->
 	<script type="text/javascript" src="js/content.js"></script>
 </head>
@@ -38,6 +40,7 @@
 <script>
 	//--	layout object
 var layout = null;
+var myCookie = null;
 function Layout() {
 	this.height = document.body.scrollHeight - 135;
 
@@ -106,17 +109,93 @@ function Layout() {
 	this.findResultInBook = function(event) {
 		this.showBookRow();
 		var target = $("a" + event.target.className.replace('btn-primary', '').replace('btn', '').replace('btn-xs', '').replace(/\s+/g,"."))[0];
-		console.log(target);
-		console.log("a" + event.target.className.replace('btn-primary', '').replace('btn', '').replace('btn-xs', '').replace(/\s+/g,".") );
-		console.log("======");
 		$(target).trigger('click');
 	};
 };
 
+
+	//*****************************************
+	//*										  *
+	//*										  *
+	//*				  cookie				  *
+	//*										  *
+	//*										  *
+	//*****************************************
+
+function MyCookie() {
+
+	this.recover = false;
+
+	this.getCookieByKey = function (key) {
+		if( document.cookie.length==0 )   return false;
+		var i=document.cookie.search(key+'=');
+		if( i==-1 )   return false;
+		i+=key.length+1;
+		var j=document.cookie.indexOf(';', i);
+		if( j==-1 )   j=document.cookie.length;
+		return document.cookie.slice(i,j);
+	};
+
+	this.getCookie = function () {
+		return document.cookie;
+	}
+
+	this.deleteCookie = function (key) {
+		
+		this.setCookie(key, '', -2000);
+	};
+
+	this.setCookie = function (key, value, expire)	{
+		var ck=key +'='+ value;
+		if( expire )
+		{
+			var epr=new Date();
+			epr.setTime(epr.getTime()+ expire*1000 );
+			ck+=';expires='+ epr.toUTCString();
+		}
+		document.cookie=ck;
+	};
+
+	this.recoverBookcase = function() {
+		if( this.getCookieByKey("bookcase") == false ) return;
+		console.log("444");
+		var temp = this.getCookieByKey("bookcase").split(",");
+		console.log(temp);
+		for(i = 1; i < $checked.length; i ++) {
+			if(temp[i] == "true")	 {
+				$("input:checkbox")[i-1].checked = true;
+			}
+		}
+		$('#showPageButton').click();
+		
+	};
+
+	this.recoverQuery = function() {
+		if( this.getCookieByKey("query") == false ) return;
+		var query = this.getCookieByKey("query");
+		$("#query")[0].value = query;
+		$("#searchBar").submit();
+		myCookie.recover = false;
+	};
+
+}
+
 $( document ).ready(function() {
 	layout = new Layout();
-
+	myCookie = new MyCookie();
+	(function () {
+		if (confirm("是否回覆上次瀏覽狀態?") == true) {
+			console.log('recover');
+			myCookie.recover = true;
+			myCookie.recoverBookcase();
+			myCookie.recoverQuery();
+		}
+	})();
 });
+
+window.onbeforeunload = function () {
+	myCookie.setCookie("bookcase", $checked);
+};
 
 </script>
 
@@ -141,7 +220,8 @@ function moveAnchor(event) {
 	for(var i = 0; i < $blockArray.length; i ++) {
 		$anchorArray.push(0);
 	}
-	
+
+	myCookie.setCookie("action", classSelector);
 	//--	從中尋找並標上顏色
 	for(var i = 0; i < $blockArray.length; i ++) {
 		var $temp = $( $blockArray[i].lastElementChild ).find(classSelector);
@@ -158,9 +238,16 @@ function moveAnchor(event) {
 			}
 			
 			//--	有找到
-			changeBackGroundColor($temp);
-			if( $blockArray[i] == parentBlock) {
-				$anchorArray[i] = 200 + $(parentBlock.parentElement).offset().top;
+			layout.changeHitEntryColor($temp);
+			if( $blockArray[i] == parentBlock ) {
+				var a = $(parentBlock.parentElement).offset().top;
+				var b = $( $temp[0] ).offset().top;
+				
+				if(a > b || (b - a) >  layout.height) {
+					$anchorArray[i] = $( $temp[0] ).offset().top;
+				} else {
+					$anchorArray[i] = null;
+				}
 			} else {
 				$anchorArray[i] = $( $temp[0] ).offset().top ;
 			}
@@ -171,23 +258,19 @@ function moveAnchor(event) {
 			var flag = false;
 			for(j = $blockArray[i].lastElementChild.childNodes.length - 1; j >= 0; j --) {
 
-				console.log($blockArray[i].lastElementChild);
 				$timeHref = $blockArray[i].lastElementChild.childNodes[j].hash.split(" ");
 				if( timeTarget > $timeHref[1].split("-")[1] ) {
-					$($blockArray[i].lastElementChild.childNodes[j]).attr('style', 'color:rgb(0, 0, 0);border-bottom-color:red;border-bottom-width:5px');
-					$($blockArray[i].lastElementChild.childNodes[j]).attr('class', $blockArray[i].lastElementChild.childNodes[j].className + " miss");
+					layout.changeMissEntryColorBottom($blockArray[i].lastElementChild.childNodes[j]);
 					if( typeof $blockArray[i].lastElementChild.childNodes[j+1] === "undefined" ) {
 						$anchorArray[i] = $($blockArray[i].lastElementChild.childNodes[$blockArray[i].lastElementChild.childNodes.length-1]).offset().top;
-						$($blockArray[i]).attr('style', 'border-bottom-color:red;border-bottom-width:5px');
-						$($blockArray[i]).attr('class', $blockArray[i].className + " miss");
+						layout.changeMissEntryColorBottom($blockArray[i]);
 					} else {
 						$anchorArray[i] = $($blockArray[i].lastElementChild.childNodes[j+1]).offset().top;
 					}
 					flag = true;
 					break;
 				}else if(j == 0 && flag == false) {
-					$($blockArray[i].lastElementChild.childNodes[0]).attr('style', 'color:rgb(0, 0, 0);border-top-color:red;border-top-width:5px');
-					$($blockArray[i].lastElementChild.childNodes[0]).attr('class', $blockArray[i].lastElementChild.childNodes[j].className + " miss");
+					layout.changeMissEntryColorTop( $blockArray[i].lastElementChild.childNodes[0] );
 					$anchorArray[i] = $($blockArray[i].lastElementChild.childNodes[0]).offset().top;
 				}
 			}
@@ -197,6 +280,7 @@ function moveAnchor(event) {
 	//--	移動到該位置
 	var window_gap = $($(".nav-sidebar")[0]).offset().top;
 	for(var i = 0; i < $anchorArray.length; i ++) {
+		if( $anchorArray[i] == null) continue;
 		$($(".nav-sidebar")[i]).animate({
 			scrollTop: $( $(".nav-sidebar")[i] ).scrollTop() + $anchorArray[i] - $($(".nav-sidebar")[i]).offset().top -200
 		}, 600);
@@ -204,28 +288,6 @@ function moveAnchor(event) {
 	
 	//--	對應春秋的條目
 	findCgunqiuByIndex(classSelector, parentBlock.className.split(" ")[3]);
-	
-	function changeBackGroundColor( $targetArray ) {
-		for(var i = 0; i < $targetArray.length; i ++) {
-			$($targetArray[i]).attr("style", "background-color:palegoldenrod");
-			$($targetArray[i]).attr("class", $($targetArray[i]).attr("class") + " taged");
-		}
-	}
-	function clearTagedArray() {
-		var tagedArray = $(".taged");
-		for(var i = 0; i < tagedArray.length; i ++) {
-			$(tagedArray[i]).removeClass("taged");
-			$(tagedArray[i]).attr("style", "background-color:white;color:rgb(0, 0, 0)");
-		}
-	}
-	
-	function clearMissArray() {
-		var tagedArray = $(".miss");
-		for(var i = 0; i < tagedArray.length; i ++) {
-			$(tagedArray[i]).removeClass("miss");
-			$(tagedArray[i]).attr("style", "color:rgb(0, 0, 0)");
-		}
-	}
 }
 </script>
 
@@ -563,7 +625,7 @@ function moveAnchor(event) {
 					<button type="button" class="btn btn-primary" onclick="layout.showQueryRow()" >檢索頁面</button>
 
 					<span id="books" >
-						<button type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >切換文本</button>
+						<button id='showPageButton' type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >切換文本</button>
 						<label style="font-size:14px" class="checkbox-inline">
 						<input type="checkbox" value="1" >左傳
 						</label>
@@ -590,6 +652,9 @@ function moveAnchor(event) {
 
 
 	<div id="simpleYear" class="dropdown">
+		<button class="btn btn-default" onclick="console.log(myCookie.getCookie());" >顯示cookie</button>
+
+
 		<span id="year" class="label label-primary" style="margin-left:5px;font-size:18px"> 
 			魯隱公元年
 		</span>
@@ -692,9 +757,7 @@ function moveAnchor(event) {
 
 
 <script>
-	$('body').on('submit', '#searchBar', function(event) {
-	
-	console.log( $checked );
+	$('body').on('submit', '#searchBar', function(event, flag) {
 	event.preventDefault();
 	layout.cleanQueryResult();
 	$.get( "ajaxQuery.php", { query: $('#query')[0].value, flag: $checked } )
@@ -703,9 +766,11 @@ function moveAnchor(event) {
 		console.log(result);
 		buildQueryResult(result);
 	});
-
-	layout.showQueryRow();
-	
+	myCookie.setCookie("query", $('#query')[0].value);
+	if(myCookie.recover != true) {
+		layout.showQueryRow();
+		
+	}
 });
 
 function buildQueryResult(result) {
@@ -731,6 +796,8 @@ function buildQueryResult(result) {
 		}
 	}
 	console.log($queryHash);
+	buildYearAnalysisChart($queryHash);
+	buildYearAnalysis($queryHash);
 
 	for(var i in $queryHash ) {
 		var panelHeading = "<div class='panel panel-default queryBlock " + $queryHash[i].dateChNorm + "'><div class='title panel-heading' style='background-color:lightsteelblue;font-size:16pt;'>" + $queryHash[i].dateChNorm + "</div><div class='panel-body'></div></div>";
@@ -764,24 +831,111 @@ function buildQueryResult(result) {
 
 	}
 
+	function buildYearAnalysisChart ($queryHash) {
+		$('#querySidebar').append("<canvas id='secondChart' width='100%' height='20%'></canvas>");
+		var $yearNumArray = queryHashToArray($queryHash);
+		var data = {
+			labels: ["隱公", "桓公", "莊公", "閔公", "僖公", "文公", "宣公", "成公", "襄公", "昭公", "定公", "哀公"],
+			datasets: [
+				{
+					label: "nums",
+					backgroundColor: 'rgba(255, 206, 86, 0.2)',
+					borderColor: 'rgba(255, 206, 86, 1)', 
+					borderWidth: 2,
+					data: $yearNumArray,
+				}
+			]
+		};
+			var myBarChart = new Chart($("#secondChart"), {
+			type: 'bar',
+			data: data,
+			options: {
+				title: {
+					display: true,
+					text: '君主年份檢索統計'
+				},
+				scales: {
+					xAxes: [{
+						stacked: true,
+						categoryPercentage: 0.5,
+						barPercentage: 1, 
+					}],
+					yAxes: [{
+						stacked: true
+					}]
+				}
+			}
+		});
+	}
 
+	function queryHashToArray ($queryHash) {
+		var flag = [];
+		var result = [];
+		var temp = ["隱公", "桓公", "莊公", "閔公", "僖公", "文公", "宣公", "成公", "襄公", "昭公", "定公", "哀公"];
+		for(var i in $queryHash ) {
+			if( flag[$queryHash[i].dateChNorm.substr(1, 2)] == undefined) flag[$queryHash[i].dateChNorm.substr(1, 2)] = 0;
+		}
+		for(var i in $queryHash) {
+			flag[$queryHash[i].dateChNorm.substr(1, 2)] += ( ObjectLength($queryHash[i]) - 1 );
+		}
+		for(var i in temp) {
+			result.push(flag[ temp[i] ]);
+		}
+		return result;
+	}
+	function buildYearAnalysis($queryHash) {
+		$("#yearListGroup").empty();				//--	reset
 
+		for(var i in $queryHash) {
+			var panel = "<div class='panel panel-default " + i + "'><div class='panel-heading' role='tab' id='heading" + i + "'><h4 class='panel-title'><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + i + "' aria-expanded='false' aria-controls='collapse" + i + "'>" + $queryHash[i].dateChNorm + "(" + (ObjectLength($queryHash[i])-1) + ")</a></h4></div></div>";
+			var headingId = "heading" + i;
+			var collapseId = "collapse" + i;
+			$("#yearListGroup").append(panel);
+			panel = $("#yearListGroup").find("." + i)[0];
+			$(panel).append("<div id='" + collapseId + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='" + headingId + "'>");
+			var collapse = $(panel).find("#" + collapseId);
+			
+			//******************* TODO 用超爛的方法解決 array reverse的問題 *******************************
+			var a = [];
+			for(var j in $queryHash[i]) {
+				a.unshift(j);
+			}
 
+			for(var j in a) {
+				j = a[j];
 
+				if($queryHash[i][j].constructor == String().constructor) continue;
+			
+				var panelBody="<div class='panel-body'><a href='#' class='" + $queryHash[i][j].timeClass + "' onclick='moveAnchorForQuery(event)'>" + $queryHash[i][j].oriTimeString + "(" + $queryHash[i][j].length +  ")</a></div>";
+				
+				$(collapse).append(panelBody);
+			}	
+		}
+	}
 
-	function getYear(input) {
+	function ObjectLength ( object ) {
+		var length = 0;
+		for( var key in object ) {
+			if( object.hasOwnProperty(key) ) {
+				++length;
+			}
+		}
+		return length;
+	};
+
+	function getYear (input) {
 		return input.split("-")[0];
-	}
+	};
 
-	function getYearAndMonth(input) {
+	function getYearAndMonth (input) {
 		return input.split("-")[0] + input.split("-")[1];
-	}
+	};
 
-	function getClassYear(input) {
+	function getClassYear (input) {
 		return input.yearStart.split('-')[0] + "-" + input.yearStart.split('-')[1];
-	}
+	};
 
-	function getMonthOrSeason(input) {
+	function getMonthOrSeason (input) {
 		var monthStart = input.yearStart.split("-")[1];
 		var monthEnd = input.yearEnd.split("-")[1];
 
@@ -846,8 +1000,9 @@ function buildQueryResult(result) {
 		}
 
 
-	}
-	function getBookName(input) {
+	};
+
+	function getBookName (input) {
 		switch(input) {
 			case '1':
 				return "春秋";
@@ -863,7 +1018,19 @@ function buildQueryResult(result) {
 			break;
 		}
 
-	}
+	};
+
+	
 }
+function moveAnchorForQuery (event) {
+		var target = $('#querySidebar').find("strong." + event.target.className.replace(/\s+/g,"."));
+		var h = target.offset().top;
+		$($("#querySidebar")[0]).animate({
+				scrollTop: $( $("#querySidebar")[0] ).scrollTop() + h - $($("#querySidebar")[0]).offset().top - 20
+			}, 600);
+		layout.cleanHitEntryColor();
+		layout.changeHitEntryColor( $(target[0].nextElementSibling).find('li') );
+	};
+
 
 </script>
