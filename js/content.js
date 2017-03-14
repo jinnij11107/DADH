@@ -29,8 +29,8 @@ $( document ).ready(function() {
 	for(var i = 0; i < text.length; i ++) {
 		for(var j = 0; j < text[i].lastElementChild.children.length; j ++) {
 			
-			$( text[i].lastElementChild.children[j].firstElementChild ).click(function () {
-				
+			$( text[i].lastElementChild.children[j].firstElementChild ).click(function (event) {
+				console.log(event.target);
 				findChunqiuByTitle(event.target.hash.replace("#", "") );
 				
 				for(var i = 0; i < $checked.length; i ++) {

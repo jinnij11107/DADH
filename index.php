@@ -108,7 +108,15 @@ function Layout() {
 	//--	query result to book
 	this.findResultInBook = function(event) {
 		this.showBookRow();
-		var target = $("a" + event.target.className.replace('btn-primary', '').replace('btn', '').replace('btn-xs', '').replace(/\s+/g,"."))[0];
+		console.log(event.target);
+		console.log($("a" + event.target.className.replace('btn-default', '').replace('btn', '').replace(/\s+/g,"."))[0]);
+		console.log( "a" + event.target.className.replace('btn-default', '').replace('btn', '').replace(/\s+/g,".") );
+		var target = $("a" + event.target.className.replace('btn-default', '').replace('btn', '').replace(/\s+/g,"."))[0];
+
+
+
+
+		//var target = $("a" + event.target.className.replace('btn-dafault', '').replace('btn-primary', '').replace('btn', '').replace('btn-xs', '').replace(/\s+/g,"."))[0];
 		$(target).trigger('click');
 	};
 };
@@ -158,7 +166,6 @@ function MyCookie() {
 
 	this.recoverBookcase = function() {
 		if( this.getCookieByKey("bookcase") == false ) return;
-		console.log("444");
 		var temp = this.getCookieByKey("bookcase").split(",");
 		console.log(temp);
 		for(i = 1; i < $checked.length; i ++) {
@@ -178,23 +185,49 @@ function MyCookie() {
 		myCookie.recover = false;
 	};
 
+	this.recoverAction = function() {
+		if( this.getCookieByKey("action") == false ) return;
+		var action = this.getCookieByKey("action");
+		$(action)[0].click()
+	};
+
+	this.recover = function() {
+		this.recover = true;
+		myCookie.recoverBookcase();
+		myCookie.recoverQuery();
+		myCookie.recoverAction();
+	}
 }
 
 $( document ).ready(function() {
 	layout = new Layout();
 	myCookie = new MyCookie();
 	(function () {
+		$('#test')[0].click();
+		/*
 		if (confirm("是否回覆上次瀏覽狀態?") == true) {
 			console.log('recover');
 			myCookie.recover = true;
 			myCookie.recoverBookcase();
 			myCookie.recoverQuery();
-		}
+			myCookie.recoverAction();
+		}*/
+
+
 	})();
+
 });
 
 window.onbeforeunload = function () {
 	myCookie.setCookie("bookcase", $checked);
+	/*
+	var slideArray = [];
+	var slideBar = $('.nav-sidebar');
+	for(var i in slideBar) {
+		slideArray.push( $(slideBar[i]).scrollTop() );
+	}
+	alert(slideArray);*/
+
 };
 
 </script>
@@ -621,8 +654,6 @@ function moveAnchor(event) {
 
 				<!-- <h5>請勾選欲顯示書目<h5> -->
 				<div class="row" style="margin-top:5px">
-					<button type="button" class="btn btn-primary" onclick="layout.showBookRow()" >對讀頁面</button>
-					<button type="button" class="btn btn-primary" onclick="layout.showQueryRow()" >檢索頁面</button>
 
 					<span id="books" >
 						<button id='showPageButton' type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >切換文本</button>
@@ -652,7 +683,7 @@ function moveAnchor(event) {
 
 
 	<div id="simpleYear" class="dropdown">
-		<button class="btn btn-default" onclick="console.log(myCookie.getCookie());" >顯示cookie</button>
+		<!-- <button class="btn btn-default" onclick="console.log(myCookie.getCookie());" >顯示cookie</button> -->
 
 
 		<span id="year" class="label label-primary" style="margin-left:5px;font-size:18px"> 
@@ -675,6 +706,37 @@ function moveAnchor(event) {
 			<li role="presentation"><a role="menuitem" tabindex="-1" href="#" >公子益師卒。</a></li>
 		</ul>
 		<span id="spanTitle" ><span class='glyphicon glyphicon-tag' aria-hidden='true'></span>元年，春，王正月。</span>
+
+		<button class="btn btn-warning" style='float:right;margin-right:10px' onclick="layout.showQueryRow();" >檢索頁面--></button>
+		
+
+		<!-- Button trigger modal -->
+		<button type="button" id='test' class="btn btn-primary btn-lg hidden" data-toggle="modal" data-target="#recoverContent" >
+			Launch demo modal
+		</button>
+
+		<!-- Modal -->
+		<div class="modal fade" id="recoverContent" tabindex="-1" role="dialog" aria-labelledby="recoverContentLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="recoverContentLabel">Hello</h4>
+					</div>
+					<div class="modal-body">
+						<p>在上次離開後，本系統有幫您做紀錄</p>
+						<p>是否要回復上次瀏覽狀態?</p>
+						<hr>
+						<p>When leaving, system had saved your last record.</p>
+						<p>Would you like to recover record for you?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" onclick='myCookie.recover();'>Recover</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
     <!-- Main board -->
@@ -728,7 +790,11 @@ function moveAnchor(event) {
 					<div id="queryContainer" class="row" >
 						<div class="col-sm-3 col-md-3">
 							<div id='queryDiv' style='width:24%;height:800px;position:fixed;overflow-y:scroll' >
-								<h4>檢索結果 : </h4>
+								<div>
+									<h4>檢索結果 : </h4>
+									<button type="button" class="btn btn-warning" style='float:right;margin-right:10px' onclick="layout.showBookRow()" ><--對讀頁面</button>
+								</div>
+								
 								<div role="tabpanel" >
 								  <!-- Nav tabs -->
 									<ul class="nav nav-tabs" role="tablist">
@@ -813,17 +879,19 @@ function buildQueryResult(result) {
 			j = a[j];
 			if($queryHash[i][j].constructor != Array().constructor)
 				continue;
-			
-			$(temp).append("<button style='margin-bottom:10px' type='button' class='btn btn-primary btn-xs " + $queryHash[i][j].timeClass + "' aria-label='Left Align' onclick='layout.findResultInBook(event)'><<</button>");
+			$(temp).append("<button type='button' class='btn btn-default " + $queryHash[i][j].timeClass + "' onclick='layout.findResultInBook(event);' aria-label='Left Align'><span class='glyphicon glyphicon-search' aria-hidden='true' onclick='this.parentElement.click();'></span></button >");
+			//$(temp).append("<button style='margin-bottom:5px' type='button' class='btn btn-primary btn-xs " + $queryHash[i][j].timeClass + "' aria-label='Left Align' onclick='layout.findResultInBook(event)'><<</button>");
 			$(temp).append("<strong class='" + $queryHash[i][j].timeClass + "' > " + $queryHash[i][j].oriTimeString + "</strong>");
 			
 			var groupList = document.createElement("lu");
 			groupList.className = "list-group";
+			groupList.style="margin-bottom:5px";
 			for(var k in $queryHash[i][j]) {
 				if($queryHash[i][j][k].constructor == String().constructor)
 					continue;
-				$(groupList).append("<div class='well well-sm' style='margin-bottom: 0px'>" + getBookName($queryHash[i][j][k].bookcaseId) + "</div>");
-				var block = "<li style='margin-bottom:10px' class='list-group-item queryText'>" + $queryHash[i][j][k].context.replace($("#query")[0].value,"<kbd style='background-color: #5F5F3F'>" + $("#query")[0].value + "</kbd>" ); + "</li>";
+				//$(groupList).append("<div class='well well-sm' style='margin-bottom: 0px'>" + getBookName($queryHash[i][j][k].bookcaseId) + "</div>");
+				$(groupList).append("<h4>" + getBookName($queryHash[i][j][k].bookcaseId) + "</h4>");
+				var block = "<li style='margin-bottom:5px;' class='list-group-item queryText'>" + $queryHash[i][j][k].context.replace($("#query")[0].value,"<kbd style='background-color: #5F5F3F'>" + $("#query")[0].value + "</kbd>" ); + "</li>";
 				$(groupList).append(block);
 			}
 			$(temp).append(groupList);
