@@ -727,8 +727,9 @@ function moveAnchor(event) {
 						<p>在上次離開後，本系統有幫您做紀錄</p>
 						<p>是否要回復上次瀏覽狀態?</p>
 						<hr>
+						<!--
 						<p>When leaving, system had saved your last record.</p>
-						<p>Would you like to recover record for you?</p>
+						<p>Would you like to recover record for you?</p> -->
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
