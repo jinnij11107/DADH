@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+
+    <title>春秋對讀系統-介紹</title>
+    
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/main.css" rel="stylesheet">
+	<link href="index.css" rel="stylesheet">
+	
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+</head>
+
+<style type=text/css> 
+	body { font-family:微軟正黑體; }
+</style>
+
+
+<body>
+    <div class="container">
+      <div class="blog-header">
+        <h1 class="blog-title">春秋三傳對讀系統介紹</h1>
+        <p class="lead blog-description">以簡單的範例讓各位快速了解此系統</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-9 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">系統簡介</h2>
+            <p class="blog-post-meta">April 7, 2017 by Ray</p>
+
+            <p>本系統為春秋三傳對讀系統，以文本中的時間脈絡幫助使用者在春秋、左傳、公羊傳，穀梁傳做條目的對讀。</p>
+            <p>以下會簡單介紹本系統的功能 : </p>
+            <ol>
+              <li><p>文本呈現方式</p></li>
+              <li><p>文本條目對應</p></li>
+              <li><p>全文檢索</p></li>
+            </ol>
+            <hr>
+            <h2>1.文本呈現方式</h2>
+            <p>本系統呈現文本的方式為垂直向下並搭配頁面滑軌讓使用者可以自行滑動至欲觀看的位置。</p>
+            <p>在系統頁面的右上角有一個選擇文本的按鈕，使用者可以自行選定欲對讀的文本，而春秋則為預設值。</p>
+            </br>
+
+            <h4 style="color:grey">EXAMPLE:</h4>
+            <p>下圖中以《春秋》與《公羊傳》為目標文本，紅框中為選擇文本的欄位，此處勾選的為公羊傳，也就是進行春秋與公羊傳的對讀。</p>
+            <img width="840" height="420" src="intro_picture/intro_1.png"/>
+            </br>
+            </br>
+            <p>當使用者所勾選的文本越多時，每分文本所分配到的空間也就越來越小，在這方面系統做的一定程度的取捨。</p>
+            <p><strong>《春秋》條目精簡，三傳解釋《春秋》條目，可以將《春秋》的條目看成新聞的標題，而三傳解經的內容當作新聞的報導。</strong></p>
+            <p>因此文本數量多時，選擇將《春秋》縮小致紅框框處，如下圖所示:。</p>
+            <img width="840" height="420" src="intro_picture/intro_2.png" />
+            </br>
+            <hr>
+            <h2>2.文本條目對應</h2>
+            <p >此為本系統的主要功能，當使用者點選任一文本中的任一條目時，系統可以幫使用者對應在不同文本中相同時間的條目。</p>
+            </br>
+            <h4 style="color:grey">EXAMPLE:</h4>
+            <p>這邊以《公羊傳》定公九年四月的條目為例:</p>
+            <blockquote>
+                <p style='font-size:14px;'>《春秋》魯定公九年:「夏，四月，戊申，鄭伯蠆卒。得寶玉大弓」。</p>
+                <p style='font-size:14px;'>《左傳》魯定公九年:「夏，陽虎歸寶玉大弓，書曰得，器用也，凡獲器用曰得，得用焉曰獲」。</p>
+                <p style='font-size:14px;'>《公羊傳》魯定公九年:「夏，四月戊申，鄭伯囆卒。得寶玉、大弓。何以書？國寶也，喪之書，得之書」。</p>
+                <p style='font-size:14px;'>《穀梁傳》魯定公九年:「夏，四月戊申，鄭伯蠆卒。得寶玉、大弓。其不地何也？寶玉、大弓在家則羞，不目羞也。惡得之？得之堤下。或曰，陽虎以解眾也」。</p>
+            </blockquote>
+            <p>下圖中點選黑色箭頭的條目，可以看到系統會自動標出在其他文本之中相同時間所記載的條目，而被縮小的《春秋》，也就是紅線處的部份也會顯示著在《春秋》之中對應到的條目。</p>
+            <img width="840" height="420" src="intro_picture/intro_3.png" />
+            <h3>Sub-heading</h3>
+            <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+            <pre><code>Example code block</code></pre>
+            <p>Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
+            <h3>Sub-heading</h3>
+            <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+            <ul>
+              <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li>
+              <li>Donec id elit non mi porta gravida at eget metus.</li>
+              <li>Nulla vitae elit libero, a pharetra augue.</li>
+            </ul>
+            <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
+            <ol>
+              <li>Vestibulum id ligula porta felis euismod semper.</li>
+              <li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li>
+              <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
+            </ol>
+            <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>
+          </div><!-- /.blog-post -->
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Another blog post</h2>
+            <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
+
+            <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
+            <blockquote>
+              <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+            </blockquote>
+            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+            <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          </div><!-- /.blog-post -->
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">New feature</h2>
+            <p class="blog-post-meta">December 14, 2013 by <a href="#">Chris</a></p>
+
+            <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+            <ul>
+              <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li>
+              <li>Donec id elit non mi porta gravida at eget metus.</li>
+              <li>Nulla vitae elit libero, a pharetra augue.</li>
+            </ul>
+            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+            <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
+          </div><!-- /.blog-post -->
+
+          <nav>
+            <ul class="pager">
+              <li><a href="#">Previous</a></li>
+              <li><a href="#">Next</a></li>
+            </ul>
+          </nav>
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Archives</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">March 2014</a></li>
+              <li><a href="#">February 2014</a></li>
+              <li><a href="#">January 2014</a></li>
+              <li><a href="#">December 2013</a></li>
+              <li><a href="#">November 2013</a></li>
+              <li><a href="#">October 2013</a></li>
+              <li><a href="#">September 2013</a></li>
+              <li><a href="#">August 2013</a></li>
+              <li><a href="#">July 2013</a></li>
+              <li><a href="#">June 2013</a></li>
+              <li><a href="#">May 2013</a></li>
+              <li><a href="#">April 2013</a></li>
+            </ol>
+          </div>
+          <div class="sidebar-module">
+            <h4>Elsewhere</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Twitter</a></li>
+              <li><a href="#">Facebook</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+  </body>
+
+</html>

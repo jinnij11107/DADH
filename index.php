@@ -28,7 +28,7 @@
 	<script src="js/Chart.bundle.js"></script>
 
 	<!-- myFunction -->
-	<script type="text/javascript" src="js/content.js"></script>
+	<script type="text/javascript" src="js/content.js?version=1.0"></script>
 </head>
 
 <style type=text/css> 
@@ -327,12 +327,31 @@ function moveAnchor(event) {
 <body>
 	<!-- Static navbar -->
     <nav class="navbar navbar-default navbar-static-top">
-    	<div class="container-fluid">
-        	<div class="navbar-header">
+    	<div class="container-fluid" style='height:40px'>
+        	<div class="navbar-header" style='height:40px'>
           		<a class="navbar-brand" href="index.php">春秋對讀系統</a>
         	</div>
+			<div class="navbar-header" style='height:40px'>
+          		<a class="navbar-brand" target="_blank" href="intro.html">系統介紹</a>
+        	</div>
+			<!--
+			<div class="navbar-header" style='height:40px'>
+          		<a id='systemIntro' class="navbar-brand" href data-toggle="modal" data-target="#Intro">系統說明書</a>
+        	</div>
+			-->
+							<!-- <h5>請勾選欲顯示書目<h5> -->
+			<div class="navbar-right" style="margin-top:5px;margin-right:2px">
+				<span id="books" >
+					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="1" >左傳</label>
+					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="2" >公羊傳</label>
+					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="3" >穀梁傳</label>
+					<button id='showPageButton' type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >選擇文本</button>
+				</span>
+			</div>
 			
+		</div>
 
+		<div class="container-fluid">
         	<div id="navbar" class="navbar-collapse collapse">
          		<ul class="nav navbar-nav">
 					<li class="dropdown" >
@@ -650,33 +669,38 @@ function moveAnchor(event) {
 							<li><a href="#魯哀公二十七年">二十七年</a></li>
 						</ul>
 					</li>
-          		</ul>
-
-				<!-- <h5>請勾選欲顯示書目<h5> -->
-				<div class="row" style="margin-top:5px">
-
-					<span id="books" >
-						<button id='showPageButton' type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >切換文本</button>
-						<label style="font-size:14px" class="checkbox-inline">
-						<input type="checkbox" value="1" >左傳
-						</label>
-						<label style="font-size:14px" class="checkbox-inline">
-						<input type="checkbox" value="2" >公羊傳
-						</label>
-						<label style="font-size:14px" class="checkbox-inline">
-						<input type="checkbox" value="3" >穀梁傳
-						</label>
-					</span>
-							
-					<form id="searchBar" class="navbar-form navbar-right" style="margin-right:2px">
+          		</ul>	
+				<div class="navbar-right" >
+					<form id="searchBar" class="navbar-form navbar-rigth" style="margin-right:2px">
 						<input id="query" type="text" class="form-control" placeholder="搜尋...">
+						<button type='submit' class="btn btn-default">全文檢索</button>
 					</form>
+				</div>
 
-				</div>	
         	</div>
-
       	</div>
     </nav>
+<!--
+	<div class="modal fade" id="Intro" tabindex="-1" role="dialog" aria-labelledby="userBookcaseLabel" aria-hidden="true">
+		<div class="modal-dialog" style='height:90%;'>
+			<div class="modal-content" style='height:90%;'>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="userBookcaseLabel">系統說明書</h4>
+				</div>
+
+				<div class="modal-body" style='height:85%;'>
+					
+				</div>
+
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
 
     <!-- Show 選擇年號 -->
     
@@ -812,6 +836,8 @@ function moveAnchor(event) {
 						</div>
 						<div class="col-sm-9 col-md-9">
 							<ul id="querySidebar" class="nav nav-sidebar" style='width:100%;height:600px;overflow-x:auto;overflow-y:auto;'>
+								<h1 style='margin-left:40%;' >沒有任何搜尋結果</h1>
+								<h4 style='margin-left:30%;' >若要使用全文檢索，請在右上角的搜尋欄位中輸入欲檢索的關鍵字並按下Enter</h4>
 							</ul>
 						</div>
 					</div>
@@ -830,8 +856,14 @@ function moveAnchor(event) {
 	$.get( "ajaxQuery.php", { query: $('#query')[0].value, flag: $checked } )
 		.done(function( data ) {
 		var result = JSON.parse(data);
-		console.log(result);
-		buildQueryResult(result);
+		if( result.length != 0 ) {
+			buildQueryResult(result);
+		} else {
+			$("#queryDiv").empty();
+			$("#querySidebar").append("<h1 style='margin-left:40%;' >沒有任何搜尋結果</h1>");
+			$("#querySidebar").append("<h4 style='margin-left:30%;' >若要使用全文檢索，請在右上角的搜尋欄位中輸入欲檢索的關鍵字並按下Enter</h4>");
+		}
+		
 	});
 	myCookie.setCookie("query", $('#query')[0].value);
 	if(myCookie.recover != true) {
@@ -862,7 +894,6 @@ function buildQueryResult(result) {
 			}
 		}
 	}
-	console.log($queryHash);
 	buildYearAnalysisChart($queryHash);
 	buildYearAnalysis($queryHash);
 
@@ -880,9 +911,10 @@ function buildQueryResult(result) {
 			j = a[j];
 			if($queryHash[i][j].constructor != Array().constructor)
 				continue;
-			$(temp).append("<button type='button' class='btn btn-default " + $queryHash[i][j].timeClass + "' onclick='layout.findResultInBook(event);' aria-label='Left Align'><span class='glyphicon glyphicon-search' aria-hidden='true' onclick='this.parentElement.click();'></span></button >");
+			
 			//$(temp).append("<button style='margin-bottom:5px' type='button' class='btn btn-primary btn-xs " + $queryHash[i][j].timeClass + "' aria-label='Left Align' onclick='layout.findResultInBook(event)'><<</button>");
 			$(temp).append("<strong class='" + $queryHash[i][j].timeClass + "' > " + $queryHash[i][j].oriTimeString + "</strong>");
+			$(temp).append("<button type='button' style='margin-left:5px' class='btn btn-default " + $queryHash[i][j].timeClass + "' onclick='layout.findResultInBook(event);' aria-label='Left Align'><<在對讀頁面中呈現</button >");
 			
 			var groupList = document.createElement("lu");
 			groupList.className = "list-group";

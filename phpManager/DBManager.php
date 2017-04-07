@@ -73,6 +73,8 @@
 					$title = $data['TITLE'];
 					$content.="<a href=\"#$classYear\" class=\"list-group-item text".$classYear."\" onclick='moveAnchor(event);' style='color:rgb(0, 0, 0)' >".$data['CONTEXT']."</a>";
 				}
+
+				
 			}
 		}
 		//--	插入文本

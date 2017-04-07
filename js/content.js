@@ -30,17 +30,24 @@ $( document ).ready(function() {
 		for(var j = 0; j < text[i].lastElementChild.children.length; j ++) {
 			
 			$( text[i].lastElementChild.children[j].firstElementChild ).click(function (event) {
-				console.log(event.target);
-				findChunqiuByTitle(event.target.hash.replace("#", "") );
+
+				//findChunqiuByTitle(event.target.hash.replace("#", "") );
 				
 				for(var i = 0; i < $checked.length; i ++) {
-					
-					if( $checked[i] == true ) {
+
+					if( $checked[i] == true  && this.hash != undefined) {
+
 						var slider = $( $bookcase[i].lastElementChild )[0];
 						var target = slider.getElementsByClassName( this.hash.replace("#", "") )[0];
-						$(slider).animate({
-							scrollTop: $(slider).scrollTop() + ( $(target).offset().top - $(slider).offset().top )
-						}, 600);
+						
+						if(target != undefined) {
+							$(slider).animate({
+								scrollTop: $(slider).scrollTop() + ( $(target).offset().top - $(slider).offset().top )
+							}, 600);
+						} else {
+
+						}
+						
 					}
 				}
 			});
@@ -60,15 +67,17 @@ $( document ).ready(function() {
 function show_page(span) {
 	$label = span.children;
 	var count = 1;
-	for(var i = 1; i < $label.length; i ++) {
+	for(var i = 0; i < $label.length; i ++) {
+		if( !$label[i].children[0] ) continue;
 		var flag = $label[i].children[0].checked;
 		if( flag == true) {
-			$checked[i] = true;
+			$checked[i+1] = true;
 			count ++;
 		} else {
-			$checked[i] = false;
+			$checked[i+1] = false;
 		}
 	}
+
 	switch(count) {
 		case 1:
 			var col = 12;
@@ -183,6 +192,10 @@ function showTargetClass(targetDiv) {
 }*/
 
 function findChunqiuByTitle(title) {
+	if( $($bookcase[0]).find("." + title).find('.list-group')[0] == undefined) {
+		return;
+	}
+
 	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
 	$("#Ctitle").empty();
 	$("#Ctitle").append('<li role="presentation" class="dropdown-header">' + title + '</li>');
@@ -205,6 +218,10 @@ function missChunqiuByTitle(title) {
 }
 
 function findCgunqiuByIndex(classSelector, title) {
+
+	if( $($bookcase[0]).find("." + title).find('.list-group')[0] == undefined) {
+		return;
+	}
 
 	$indexArray = $($bookcase[0]).find("." + title).find('.list-group')[0].children;
 	var $temp = $( $indexArray ).filter(classSelector);
