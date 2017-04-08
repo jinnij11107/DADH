@@ -868,7 +868,6 @@ function moveAnchor(event) {
 	myCookie.setCookie("query", $('#query')[0].value);
 	if(myCookie.recover != true) {
 		layout.showQueryRow();
-		
 	}
 });
 

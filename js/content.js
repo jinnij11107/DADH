@@ -18,7 +18,7 @@ $( document ).ready(function() {
 		$($panel[i]).height(h - t - 5);
 	}
 	$('#queryDiv').height(h-80);
-	$("#querySidebar").height(h-80);
+	$("#querySidebar").height(h-112);
 });
 
 //--	dropdown bar action listener
