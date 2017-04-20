@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" />
 
-    <title>春秋對讀系統</title>
+    <title>春秋三傳對讀系統</title>
     
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -329,10 +329,10 @@ function moveAnchor(event) {
     <nav class="navbar navbar-default navbar-static-top">
     	<div class="container-fluid" style='height:40px'>
         	<div class="navbar-header" style='height:40px'>
-          		<a class="navbar-brand" href="index.php">春秋對讀系統</a>
+          		<a class="navbar-brand" href="index.php">春秋三傳對讀系統</a>
         	</div>
 			<div class="navbar-header" style='height:40px'>
-          		<a class="navbar-brand" target="_blank" href="intro.html">系統介紹</a>
+          		<a class="navbar-brand" target="_blank" href="intro.html">使用說明</a>
         	</div>
 			<!--
 			<div class="navbar-header" style='height:40px'>
