@@ -342,9 +342,9 @@ function moveAnchor(event) {
 							<!-- <h5>請勾選欲顯示書目<h5> -->
 			<div class="navbar-right" style="margin-top:5px;margin-right:2px">
 				<span id="books" >
-					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="1" >左傳</label>
-					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="2" >公羊傳</label>
-					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="3" >穀梁傳</label>
+					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="1" checked>左傳</label>
+					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="2" checked>公羊傳</label>
+					<label style="font-size:14px" class="checkbox-inline"><input type="checkbox" value="3" checked>穀梁傳</label>
 					<button id='showPageButton' type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >選擇文本</button>
 				</span>
 			</div>
@@ -676,7 +676,6 @@ function moveAnchor(event) {
 						<button type='submit' class="btn btn-default">全文檢索</button>
 					</form>
 				</div>
-
         	</div>
       	</div>
     </nav>
@@ -770,37 +769,37 @@ function moveAnchor(event) {
     		<div id="main">
 				<div class="col-sm-12 col-md-12">
 					<div class="row">
-					    <div class="book col-sm-12 content">
+					    <div class="book col-sm-12 content hidden">
 							<h1 class="page-header" style="font-size:24px" >春秋</h1>
 							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(1);?>
 							</ul>
 						</div>
 						
-						<div class="book col-sm-4 content hidden">
+						<div class="book col-sm-4 content">
 							<h1 class="page-header" style="font-size:24px" >左傳</h1>
-							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
+							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(2);?>
 							</ul>
 						</div>
 						
-						<div class="book col-sm-4 content hidden">
+						<div class="book col-sm-4 content">
 							<h1 class="page-header" style="font-size:24px" >公羊傳</h1>
-							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
+							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(3);?>
 							</ul>
 						</div>
 						
-						<div class="book col-sm-4 content hidden">
+						<div class="book col-sm-4 content">
 							<h1 class="page-header" style="font-size:24px" >穀梁傳</h1>
-							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
+							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 							    <?php $DBManager->queryAndSet(4);?>
 							</ul>
 						</div>
 						
 						<div class="book col-sm-3 content hidden">
 							<h1 class="page-header">春秋經解</h1>
-							<ul class="nav nav-sidebar" style="height:610px;overflow-x:auto;overflow-y:auto;">
+							<ul class="nav nav-sidebar" style="width:100%;height:200px;overflow-x:auto;overflow-y:auto;">
 								<?php $DBManager->queryAndSet(5);?>
 							</ul>
 						</div>

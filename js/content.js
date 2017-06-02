@@ -7,13 +7,13 @@ $(document).on('click', '.dropdown-menu li a', function () {
 //--	container initialization
 $( document ).ready(function() {
     $bookcase = $('.book');
-	$checked = [true, false, false, false, false ];
+	$checked = [true, true, true, true, false ];
 	$scrollValue = [0, 0, 0, 0, 0];
 	
 	$panel = $(".nav-sidebar");
 	
 	var h = document.body.scrollHeight;
-	var t = $($(".nav-sidebar")[0]).offset().top;
+	var t = $($(".nav-sidebar")[1]).offset().top;
 	for(var i = 0; i < $panel.length - 1; i ++) {
 		$($panel[i]).height(h - t - 5);
 	}
@@ -57,9 +57,10 @@ $( document ).ready(function() {
 
 //--	detach other
 $( document ).ready(function() {
+	/*
 	for(var i = 1; i < $bookcase.length; i ++) {
 		$( $bookcase[i] ).detach();
-	}
+	}*/
 });
 
 
