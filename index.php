@@ -334,11 +334,19 @@ function moveAnchor(event) {
 			<div class="navbar-header" style='height:40px'>
           		<a class="navbar-brand" target="_blank" href="intro.html">使用說明</a>
         	</div>
+
+        	<div >
+				<p>若您使用本網站協助您撰寫論文或學術研究,
+					請加註引用本站為資料來源數位物件識別碼 (Digital Object Identifier, DOI)
+					<a href='http://doi.airiti.com/NTURCDH_DB/CRSC.html'>doi:10.6681/NTURCDH.DB_CRSC/Service</a>
+				</p>
+        	</div>
 			<!--
 			<div class="navbar-header" style='height:40px'>
           		<a id='systemIntro' class="navbar-brand" href data-toggle="modal" data-target="#Intro">系統說明書</a>
         	</div>
 			-->
+			
 							<!-- <h5>請勾選欲顯示書目<h5> -->
 			<div class="navbar-right" style="margin-top:5px;margin-right:2px">
 				<span id="books" >
@@ -348,6 +356,8 @@ function moveAnchor(event) {
 					<button id='showPageButton' type="button" class="btn btn-primary" onclick="show_page(this.parentElement)" >選擇文本</button>
 				</span>
 			</div>
+
+
 			
 		</div>
 
